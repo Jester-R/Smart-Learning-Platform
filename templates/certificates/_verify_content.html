@@ -1,0 +1,22 @@
+<div class="row justify-content-center"><div class="col-lg-7">
+    <div class="card shadow-sm"><div class="card-body p-4">
+        <h1 class="h4">{% translate "Verify a certificate" %}</h1>
+        <p class="text-muted">{% translate "Enter the certificate ID or verification code." %}</p>
+        <form method="get" class="row g-2 mb-4">
+            <div class="col"><input class="form-control" type="text" name="code" value="{{ query }}" placeholder="Certificate ID or verification code"></div>
+            <div class="col-auto"><button class="btn btn-primary" type="submit">{% translate "Verify" %}</button></div>
+        </form>
+        {% if query %}
+            {% if certificate %}
+            <div class="alert alert-success"><strong>{% translate "Valid certificate." %}</strong> {{ certificate.student.full_name }} completed {{ certificate.course.title }} on {{ certificate.issued_at|date:"F d, Y" }}.</div>
+            <dl class="row mb-0">
+                <dt class="col-sm-4">{% translate "Certificate ID" %}</dt><dd class="col-sm-8"><code>{{ certificate.certificate_id }}</code></dd>
+                <dt class="col-sm-4">{% translate "Status" %}</dt><dd class="col-sm-8"><span class="badge {% if certificate.status == 'valid' %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ certificate.get_status_display }}</span></dd>
+                <dt class="col-sm-4">{% translate "Issued" %}</dt><dd class="col-sm-8">{{ certificate.issued_at|date:"F d, Y" }}</dd>
+            </dl>
+            {% else %}
+            <div class="alert alert-danger mb-0">No certificate found for “{{ query }}”.</div>
+            {% endif %}
+        {% endif %}
+    </div></div>
+</div></div>

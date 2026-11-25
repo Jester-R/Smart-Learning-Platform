@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+{% load static %}
+{% block page_title %}Administrator dashboard{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}?v=beauty-1">
+{% endblock %}
+{% block content %}
+<div class="admin-dashboard">
+
+    <section class="admin-hero">
+        <div class="admin-hero__orb admin-hero__orb--one"></div>
+        <div class="admin-hero__orb admin-hero__orb--two"></div>
+        <div class="admin-hero__content">
+            <span class="admin-eyebrow"><i class="bi bi-shield-lock-fill"></i> {% translate "Administrator control center" %}</span>
+            <h1>{{ greeting }}, {{ user.first_name|default:user.full_name }}</h1>
+            <p>{% translate "Here is the pulse of your learning platform. Manage people, courses, and results from one place." %}</p>
+            <div class="admin-hero__actions">
+                <a class="admin-btn admin-btn--primary" href="{% url 'accounts:user_list' %}">
+                    <i class="bi bi-people-fill"></i> {% translate "Manage users" %}
+                </a>
+                <a class="admin-btn admin-btn--ghost" href="{% url 'analytics:reports' %}">
+                    <i class="bi bi-graph-up-arrow"></i> {% translate "View reports" %}
+                </a>
+                <a class="admin-btn admin-btn--ghost" href="{% url 'accounts:platform_settings' %}">
+                    <i class="bi bi-sliders"></i> {% translate "Platform settings" %}
+                </a>
+            </div>
+            <div class="admin-status-strip">
+                <span class="admin-chip admin-chip--ok"><span class="admin-chip__dot"></span><i class="bi bi-database-check"></i> {% translate "Database online" %}</span>
+                <span class="admin-chip {% if ai_configured %}admin-chip--ok{% else %}admin-chip--warn{% endif %}">
+                    <span class="admin-chip__dot"></span><i class="bi bi-stars"></i>
+                    AI assistant {% if ai_configured %}ready{% else %}needs API key{% endif %}
+                </span>
+                <span class="admin-chip {% if platform_configuration.video_downloads_enabled %}admin-chip--ok{% else %}admin-chip--muted{% endif %}">
+                    <span class="admin-chip__dot"></span><i class="bi bi-cloud-arrow-down"></i>
+                    Downloads {% if platform_configuration.video_downloads_enabled %}enabled{% else %}disabled{% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="admin-hero__identity">
+            <div class="admin-hero__monogram">
+                {% if user.first_name or user.last_name %}
+                {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+                {% else %}
+                <i class="bi bi-shield-lock-fill"></i>
+                {% endif %}
+            </div>
+            <div class="admin-hero__name">{{ user.full_name }}</div>
+            <span class="admin-role-pill">{{ user.get_role_display }}</span>
+            <div class="admin-hero__date"><i class="bi bi-calendar3"></i> {% now "l, F j, Y" %}</div>
+        </div>
+    </section>
+
+    <section class="design-section-grid" aria-label="{% translate 'Administrator sections' %}">
+        <a class="design-section-card flex items-center gap-3" href="{% url 'accounts:user_list' %}"><span class="design-section-card__icon"><i data-lucide="users"></i></span><span><strong>{% translate "User Management" %}</strong><small>{{ total_users }} {% translate "accounts" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'accounts:user_list' %}?role=teacher"><span class="design-section-card__icon"><i data-lucide="presentation"></i></span><span><strong>{% translate "Teacher Accounts" %}</strong><small>{{ total_teachers }} {% translate "teachers" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'accounts:user_list' %}?role=student"><span class="design-section-card__icon"><i data-lucide="graduation-cap"></i></span><span><strong>{% translate "Student Accounts" %}</strong><small>{{ total_students }} {% translate "students" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'courses:list' %}"><span class="design-section-card__icon"><i data-lucide="book-open"></i></span><span><strong>{% translate "Course Management" %}</strong><small>{{ total_courses }} {% translate "courses" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'live:portal' %}"><span class="design-section-card__icon"><i data-lucide="radio"></i></span><span><strong>{% translate "Live Portal" %}</strong><small>{% translate "Schedule and monitor sessions" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'analytics:reports' %}"><span class="design-section-card__icon"><i data-lucide="bar-chart"></i></span><span><strong>{% translate "System Analytics" %}</strong><small>{% translate "Platform health and trends" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'analytics:reports' %}"><span class="design-section-card__icon"><i data-lucide="file-text"></i></span><span><strong>{% translate "Reports" %}</strong><small>{% translate "Grades and enrollments" %}</small></span></a>
+        <a class="design-section-card flex items-center gap-3" href="{% url 'accounts:platform_settings' %}"><span class="design-section-card__icon"><i data-lucide="settings"></i></span><span><strong>{% translate "System Settings" %}</strong><small>{% translate "AI and platform controls" %}</small></span></a>
+    </section>
+
+    <section class="admin-kpi-grid">
+        <article class="admin-kpi admin-kpi--violet">
+            <div class="admin-kpi__top">
+                <span class="admin-kpi__icon"><i class="bi bi-people-fill"></i></span>
+                <span class="admin-kpi__trend"><i class="bi bi-arrow-up-right"></i> {% translate "people" %}</span>
+            </div>
+            <div class="admin-kpi__value">{{ total_users }}</div>
+            <div class="admin-kpi__label">{% translate "Total users" %}</div>
+            <div class="admin-kpi__meta">{{ total_students }} students · {{ total_teachers }} teachers · {{ total_admins }} admins</div>
+        </article>
+        <article class="admin-kpi admin-kpi--blue">
+            <div class="admin-kpi__top">
+                <span class="admin-kpi__icon"><i class="bi bi-journal-richtext"></i></span>
+                <span class="admin-kpi__trend"><i class="bi bi-check2-circle"></i> {{ published_courses }} live</span>
+            </div>
+            <div class="admin-kpi__value">{{ total_courses }}</div>
+            <div class="admin-kpi__label">{% translate "Courses" %}</div>
+            <div class="admin-kpi__meta">{{ draft_courses }} drafts · {{ archived_courses }} archived</div>
+        </article>
+        <article class="admin-kpi admin-kpi--green">
+            <div class="admin-kpi__top">
+                <span class="admin-kpi__icon"><i class="bi bi-person-check-fill"></i></span>
+                <span class="admin-kpi__trend"><i class="bi bi-activity"></i> {{ active_enrollments }} active</span>
+            </div>
+            <div class="admin-kpi__value">{{ total_enrollments }}</div>
+            <div class="admin-kpi__label">{% translate "Enrollments" %}</div>
+            <div class="admin-kpi__meta">{{ pending_submissions }} submission{{ pending_submissions|pluralize }} awaiting grading</div>
+        </article>
+        <article class="admin-kpi admin-kpi--amber">
+            <div class="admin-kpi__top">
+                <span class="admin-kpi__icon"><i class="bi bi-award-fill"></i></span>
+                <span class="admin-kpi__trend"><i class="bi bi-patch-check"></i> {% translate "verified" %}</span>
+            </div>
+            <div class="admin-kpi__value">{{ certificates_issued }}</div>
+            <div class="admin-kpi__label">{% translate "Certificates issued" %}</div>
+            <div class="admin-kpi__meta">{% translate "Valid credentials on record" %}</div>
+        </article>
+    </section>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-8">
+            <section class="admin-card h-100">
+                <header class="admin-card__header">
+                    <div>
+                        <span class="admin-card__eyebrow">{% translate "Live overview" %}</span>
+                        <h2 class="admin-card__title">{% translate "Platform pulse" %}</h2>
+                    </div>
+                    <span class="admin-live-pill"><span></span> {% translate "Live" %}</span>
+                </header>
+                <div class="row g-4 align-items-stretch">
+                    <div class="col-md-7">
+                        <div class="admin-panel-label">{% translate "Course pipeline" %}</div>
+                        <div class="admin-bar-row">
+                            <div class="admin-bar-row__head">
+                                <span><i class="bi bi-broadcast text-success"></i> {% translate "Published" %}</span>
+                                <strong>{{ published_courses }}</strong>
+                            </div>
+                            <div class="admin-progress"><span class="admin-progress__bar admin-progress__bar--green" style="width: {{ published_percent }}%;"></span></div>
+                        </div>
+                        <div class="admin-bar-row">
+                            <div class="admin-bar-row__head">
+                                <span><i class="bi bi-pencil-square text-warning"></i> {% translate "Drafts" %}</span>
+                                <strong>{{ draft_courses }}</strong>
+                            </div>
+                            <div class="admin-progress"><span class="admin-progress__bar admin-progress__bar--amber" style="width: {{ draft_percent }}%;"></span></div>
+                        </div>
+                        <div class="admin-bar-row">
+                            <div class="admin-bar-row__head">
+                                <span><i class="bi bi-archive text-secondary"></i> {% translate "Archived" %}</span>
+                                <strong>{{ archived_courses }}</strong>
+                            </div>
+                            <div class="admin-progress"><span class="admin-progress__bar admin-progress__bar--muted" style="width: {{ archived_percent }}%;"></span></div>
+                        </div>
+
+                        <div class="admin-panel-label mt-4">{% translate "Enrollment health" %}</div>
+                        <div class="admin-bar-row">
+                            <div class="admin-bar-row__head">
+                                <span><i class="bi bi-people text-info"></i> {% translate "Active learners" %}</span>
+                                <strong>{{ active_enrollments }}</strong>
+                            </div>
+                            <div class="admin-progress"><span class="admin-progress__bar admin-progress__bar--blue" style="width: {{ active_enrollment_rate }}%;"></span></div>
+                        </div>
+                        <div class="admin-insight mt-3">
+                            <i class="bi bi-lightbulb"></i>
+                            <span><strong>{{ pending_submissions }}</strong> submission{{ pending_submissions|pluralize }} need{{ pending_submissions|pluralize:"s," }} review. Keep grading on track.</span>
+                            <a href="{% url 'analytics:reports' %}">{% translate "Open reports" %}</a>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="admin-ring-wrap">
+                            <div class="admin-ring" style="--value: {{ completion_rate }}%;">
+                                <div class="admin-ring__inner">
+                                    <span class="admin-ring__value">{{ completion_rate }}%</span>
+                                    <span class="admin-ring__label">{% translate "Completion" %}</span>
+                                </div>
+                            </div>
+                            <p class="admin-ring__caption">{{ completed_enrollments }} of {{ total_enrollments }} enrollments completed</p>
+                        </div>
+                        <div class="admin-content-mix">
+                            <div class="admin-content-mix__item">
+                                <span class="admin-content-mix__icon admin-content-mix__icon--blue"><i class="bi bi-play-btn"></i></span>
+                                <span class="admin-content-mix__value">{{ total_lessons }}</span>
+                                <span class="admin-content-mix__label">{% translate "Lessons" %}</span>
+                            </div>
+                            <div class="admin-content-mix__item">
+                                <span class="admin-content-mix__icon admin-content-mix__icon--violet"><i class="bi bi-clipboard-check"></i></span>
+                                <span class="admin-content-mix__value">{{ total_assignments }}</span>
+                                <span class="admin-content-mix__label">{% translate "Assignments" %}</span>
+                            </div>
+                            <div class="admin-content-mix__item">
+                                <span class="admin-content-mix__icon admin-content-mix__icon--green"><i class="bi bi-question-circle"></i></span>
+                                <span class="admin-content-mix__value">{{ total_quizzes }}</span>
+                                <span class="admin-content-mix__label">{% translate "Quizzes" %}</span>
+                            </div>
+                            <div class="admin-content-mix__item">
+                                <span class="admin-content-mix__icon admin-content-mix__icon--amber"><i class="bi bi-file-earmark-text"></i></span>
+                                <span class="admin-content-mix__value">{{ total_exams }}</span>
+                                <span class="admin-content-mix__label">{% translate "Exams" %}</span>
+                            </div>
+                            <div class="admin-content-mix__item">
+                                <span class="admin-content-mix__icon admin-content-mix__icon--cyan"><i class="bi bi-megaphone"></i></span>
+                                <span class="admin-content-mix__value">{{ total_announcements }}</span>
+                                <span class="admin-content-mix__label">{% translate "Announcements" %}</span>
+                            </div>
+                            <div class="admin-content-mix__item">
+                                <span class="admin-content-mix__icon admin-content-mix__icon--rose"><i class="bi bi-bell"></i></span>
+                                <span class="admin-content-mix__value">{{ total_notifications }}</span>
+                                <span class="admin-content-mix__label">{% translate "Notifications" %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-4">
+            <section class="admin-card h-100">
+                <header class="admin-card__header">
+                    <div>
+                        <span class="admin-card__eyebrow">{% translate "Shortcuts" %}</span>
+                        <h2 class="admin-card__title">{% translate "Admin toolkit" %}</h2>
+                    </div>
+                    <i class="bi bi-command admin-card__header-icon"></i>
+                </header>
+                <div class="admin-actions">
+                    <a class="admin-action" href="{% url 'accounts:user_list' %}">
+                        <span class="admin-action__icon admin-action__icon--blue"><i class="bi bi-people"></i></span>
+                        <span><strong>{% translate "Users" %}</strong><small>{% translate "Manage accounts and roles" %}</small></span>
+                        <i class="bi bi-arrow-up-right admin-action__arrow"></i>
+                    </a>
+                    <a class="admin-action" href="{% url 'analytics:reports' %}">
+                        <span class="admin-action__icon admin-action__icon--violet"><i class="bi bi-bar-chart-line"></i></span>
+                        <span><strong>{% translate "Reports" %}</strong><small>{% translate "Grades and enrollments" %}</small></span>
+                        <i class="bi bi-arrow-up-right admin-action__arrow"></i>
+                    </a>
+                    <a class="admin-action" href="{% url 'courses:create' %}">
+                        <span class="admin-action__icon admin-action__icon--green"><i class="bi bi-plus-circle"></i></span>
+                        <span><strong>{% translate "New course" %}</strong><small>{% translate "Create learning content" %}</small></span>
+                        <i class="bi bi-arrow-up-right admin-action__arrow"></i>
+                    </a>
+                    <a class="admin-action" href="{% url 'notifications:announcement_create' %}">
+                        <span class="admin-action__icon admin-action__icon--amber"><i class="bi bi-megaphone"></i></span>
+                        <span><strong>{% translate "Announcement" %}</strong><small>{% translate "Broadcast to your audience" %}</small></span>
+                        <i class="bi bi-arrow-up-right admin-action__arrow"></i>
+                    </a>
+                    <a class="admin-action" href="{% url 'accounts:platform_settings' %}">
+                        <span class="admin-action__icon admin-action__icon--cyan"><i class="bi bi-sliders"></i></span>
+                        <span><strong>{% translate "Settings" %}</strong><small>{% translate "AI and platform controls" %}</small></span>
+                        <i class="bi bi-arrow-up-right admin-action__arrow"></i>
+                    </a>
+                    <a class="admin-action" href="/admin/">
+                        <span class="admin-action__icon admin-action__icon--rose"><i class="bi bi-shield-gear"></i></span>
+                        <span><strong>{% translate "Site administration" %}</strong><small>{% translate "Advanced database tools" %}</small></span>
+                        <i class="bi bi-arrow-up-right admin-action__arrow"></i>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+        <div class="col-xl-4">
+            <section class="admin-card h-100">
+                <header class="admin-card__header">
+                    <div>
+                        <span class="admin-card__eyebrow">{% translate "People" %}</span>
+                        <h2 class="admin-card__title">{% translate "Community mix" %}</h2>
+                    </div>
+                </header>
+                <div class="admin-donut-wrap">
+                    <div class="admin-donut" style="background: {{ role_gradient }};">
+                        <div class="admin-donut__inner">
+                            <span class="admin-donut__value">{{ total_users }}</span>
+                            <span class="admin-donut__label">{% translate "members" %}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="admin-legend">
+                    <div class="admin-legend__row">
+                        <span class="admin-legend__dot admin-legend__dot--green"></span>
+                        <span class="admin-legend__name">{% translate "Students" %}</span>
+                        <strong>{{ total_students }}</strong>
+                        <span class="admin-legend__percent">{{ student_percent }}%</span>
+                    </div>
+                    <div class="admin-legend__row">
+                        <span class="admin-legend__dot admin-legend__dot--blue"></span>
+                        <span class="admin-legend__name">{% translate "Teachers" %}</span>
+                        <strong>{{ total_teachers }}</strong>
+                        <span class="admin-legend__percent">{{ teacher_percent }}%</span>
+                    </div>
+                    <div class="admin-legend__row">
+                        <span class="admin-legend__dot admin-legend__dot--rose"></span>
+                        <span class="admin-legend__name">{% translate "Administrators" %}</span>
+                        <strong>{{ total_admins }}</strong>
+                        <span class="admin-legend__percent">{{ admin_percent }}%</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-8">
+            <section class="admin-card h-100">
+                <header class="admin-card__header">
+                    <div>
+                        <span class="admin-card__eyebrow">{% translate "Newest members" %}</span>
+                        <h2 class="admin-card__title">{% translate "Recently joined" %}</h2>
+                    </div>
+                    <a class="admin-link" href="{% url 'accounts:user_list' %}">{% translate "View all" %} <i class="bi bi-arrow-right"></i></a>
+                </header>
+                <div class="admin-user-list">
+                    {% for item in recent_users %}
+                    <div class="admin-user">
+                        <span class="admin-avatar admin-avatar--{{ item.role }}">{{ item.first_name|first|upper }}{{ item.last_name|first|upper }}</span>
+                        <div class="admin-user__identity">
+                            <strong>{{ item.full_name }}</strong>
+                            <span>{{ item.email }}</span>
+                        </div>
+                        <span class="admin-role admin-role--{{ item.role }}">{{ item.get_role_display }}</span>
+                        <span class="admin-user__time"><i class="bi bi-clock"></i> {{ item.date_joined|timesince }} ago</span>
+                    </div>
+                    {% empty %}
+                    <div class="admin-empty"><i class="bi bi-person-plus"></i> {% translate "No users have joined yet." %}</div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-xl-8">
+            <section class="admin-card h-100">
+                <header class="admin-card__header">
+                    <div>
+                        <span class="admin-card__eyebrow">{% translate "Audit trail" %}</span>
+                        <h2 class="admin-card__title">{% translate "Recent activity" %}</h2>
+                    </div>
+                    <a class="admin-link" href="{% url 'analytics:activity' %}">{% translate "Full log" %} <i class="bi bi-arrow-right"></i></a>
+                </header>
+                <div class="admin-timeline">
+                    {% for log in recent_activity %}
+                    <div class="admin-timeline__item">
+                        <span class="admin-timeline__icon admin-timeline__icon--{{ log.action }}">
+                            {% if log.action == 'login' %}<i class="bi bi-box-arrow-in-right"></i>
+                            {% elif log.action == 'logout' %}<i class="bi bi-box-arrow-right"></i>
+                            {% elif log.action == 'create' %}<i class="bi bi-plus-lg"></i>
+                            {% elif log.action == 'update' %}<i class="bi bi-pencil"></i>
+                            {% elif log.action == 'delete' %}<i class="bi bi-trash"></i>
+                            {% elif log.action == 'view' %}<i class="bi bi-eye"></i>
+                            {% elif log.action == 'enroll' %}<i class="bi bi-person-check"></i>
+                            {% elif log.action == 'submit' %}<i class="bi bi-file-earmark-arrow-up"></i>
+                            {% elif log.action == 'grade' %}<i class="bi bi-check2-square"></i>
+                            {% elif log.action == 'ai_query' %}<i class="bi bi-stars"></i>
+                            {% elif log.action == 'certificate' %}<i class="bi bi-award"></i>
+                            {% else %}<i class="bi bi-activity"></i>{% endif %}
+                        </span>
+                        <div class="admin-timeline__body">
+                            <div class="admin-timeline__text">
+                                <span class="admin-role admin-role--neutral">{{ log.get_action_display }}</span>
+                                {{ log.description|default:"Activity recorded" }}
+                            </div>
+                            <div class="admin-timeline__meta">
+                                <span><i class="bi bi-person"></i> {{ log.user.full_name|default:"System" }}</span>
+                                <span><i class="bi bi-clock"></i> {{ log.created_at|timesince }} ago</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="admin-empty"><i class="bi bi-inbox"></i> {% translate "No activity has been recorded yet." %}</div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        <div class="col-xl-4">
+            <section class="admin-card h-100">
+                <header class="admin-card__header">
+                    <div>
+                        <span class="admin-card__eyebrow">{% translate "By enrollment" %}</span>
+                        <h2 class="admin-card__title">{% translate "Popular courses" %}</h2>
+                    </div>
+                    <a class="admin-link" href="{% url 'courses:list' %}">{% translate "Browse" %} <i class="bi bi-arrow-right"></i></a>
+                </header>
+                <div class="admin-course-list">
+                    {% for course in popular_courses %}
+                    <a class="admin-course" href="{{ course.get_absolute_url }}">
+                        <div class="admin-course__head">
+                            <span class="admin-course__code">{{ course.code }}</span>
+                            <span class="admin-course__count">{{ course.student_count }} enrolled</span>
+                        </div>
+                        <div class="admin-course__title">{{ course.title }}</div>
+                        <div class="admin-progress admin-progress--thin"><span class="admin-progress__bar admin-progress__bar--gradient" style="width: {{ course.enrollment_bar_percent }}%;"></span></div>
+                        <div class="admin-course__meta">
+                            <span><i class="bi bi-person"></i> {{ course.teacher.full_name }}</span>
+                            <span class="admin-course__status admin-course__status--{{ course.status }}">{{ course.get_status_display }}</span>
+                        </div>
+                    </a>
+                    {% empty %}
+                    <div class="admin-empty"><i class="bi bi-journal-plus"></i> {% translate "No courses have been created yet." %}</div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

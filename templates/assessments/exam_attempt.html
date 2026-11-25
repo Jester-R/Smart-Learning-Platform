@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load app_extras %}
+{% block page_title %}Exam · {{ exam.title }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h1 class="h4 mb-1">{{ exam.title }}</h1><p class="text-muted mb-0">{{ course.code }} · Attempt {{ attempt.attempt_number }} · {{ attempt.max_score }} points</p></div>
+    <div class="badge text-bg-danger fs-6" id="timer">{% translate "Time left" %}</div>
+</div>
+{% if exam.instructions %}<div class="alert alert-warning">{{ exam.instructions|linebreaksbr }}</div>{% endif %}
+<form method="post" id="attemptForm">
+    {% csrf_token %}
+    {% for question in questions %}
+    {% with ans=existing|get_item:question.pk %}
+    <div class="card mb-3"><div class="card-body">
+        <div class="d-flex justify-content-between gap-2 mb-2"><h2 class="h6 mb-0">Question {{ forloop.counter }} of {{ questions|length }}</h2><span class="badge text-bg-light">{{ question.points }} pts</span></div>
+        <div class="mb-3">{{ question.text|linebreaksbr }}</div>
+        {% if question.question_type == 'multiple_choice' or question.question_type == 'true_false' %}
+            {% for choice in question.choices.all %}
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="question_{{ question.pk }}" id="choice{{ choice.pk }}" value="{{ choice.pk }}" {% if ans and ans.selected_choice_id == choice.pk %}checked{% endif %}>
+                <label class="form-check-label" for="choice{{ choice.pk }}">{{ choice.text }}</label>
+            </div>
+            {% endfor %}
+        {% elif question.question_type == 'short_answer' %}
+            <input class="form-control" type="text" name="text_{{ question.pk }}" value="{{ ans.text_answer|default:'' }}" placeholder="Your answer">
+        {% else %}
+            <textarea class="form-control" rows="5" name="text_{{ question.pk }}" placeholder="Write your essay answer">{{ ans.text_answer|default:'' }}</textarea>
+        {% endif %}
+    </div></div>
+    {% endwith %}
+    {% endfor %}
+    <div class="d-flex justify-content-between align-items-center">
+        <span class="text-muted small">{% translate "Your answers are submitted together when you finish." %}</span>
+        <button class="btn btn-primary" type="submit" onclick="return confirm('Submit this examination now?')">{% translate "Submit examination" %}</button>
+    </div>
+</form>
+{% endblock %}
+{% block extra_js %}
+<script>
+let remaining = {{ remaining_seconds }};
+const timer = document.getElementById('timer');
+function tick() {
+    const minutes = Math.floor(remaining / 60);
+    const seconds = remaining % 60;
+    timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    if (remaining <= 0) {
+        document.getElementById('attemptForm').submit();
+        return;
+    }
+    remaining -= 1;
+    setTimeout(tick, 1000);
+}
+tick();
+</script>
+{% endblock %}

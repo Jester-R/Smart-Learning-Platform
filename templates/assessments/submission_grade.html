@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block page_title %}Grade submission{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div><h1 class="h4 mb-1">{% translate "Grade submission" %}</h1><p class="text-muted mb-0">{{ submission.student.full_name }} · {{ submission.assignment.title }}</p></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'assessments:assignment_submissions' course.slug submission.assignment.pk %}">{% translate "Back" %}</a>
+</div>
+<div class="row g-4">
+    <div class="col-lg-7"><div class="card"><div class="card-header bg-white fw-semibold">{% translate "Student response" %}</div><div class="card-body">
+        {% if submission.text_response %}<div class="text-secondary">{{ submission.text_response|linebreaks }}</div>{% else %}<p class="text-muted">{% translate "No written response." %}</p>{% endif %}
+        {% if submission.file %}<a class="btn btn-sm btn-outline-primary" href="{{ submission.file.url }}" target="_blank" rel="noopener">{% translate "Open submitted file" %}</a>{% endif %}
+        <div class="small text-muted mt-3">Submitted {{ submission.submitted_at|date:"M d, Y H:i" }}{% if submission.is_late %} · late{% endif %} · resubmissions: {{ submission.resubmission_count }}</div>
+    </div></div></div>
+    <div class="col-lg-5"><div class="card"><div class="card-header bg-white fw-semibold">{% translate "Grade" %}</div><div class="card-body">
+        <form method="post" novalidate>
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-3"><label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}</div>
+            {% endfor %}
+            <p class="small text-muted">Maximum: {{ submission.assignment.max_points }} points.</p>
+            <button class="btn btn-primary w-100" type="submit">{% translate "Save grade" %}</button>
+        </form>
+    </div></div></div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block page_title %}Grade attempt{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div><h1 class="h4 mb-1">{% translate "Grade attempt" %}</h1><p class="text-muted mb-0">{{ attempt.student.full_name }} · {% if kind == 'quiz' %}{{ attempt.quiz.title }}{% else %}{{ attempt.exam.title }}{% endif %}</p></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{% if kind == 'quiz' %}{% url 'assessments:quiz_result' attempt.pk %}{% else %}{% url 'assessments:exam_result' attempt.pk %}{% endif %}">{% translate "Result" %}</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+<form method="post">
+    {% csrf_token %}
+    {% for answer in answers %}
+    <div class="border rounded p-3 mb-3">
+        <div class="fw-semibold">Q{{ answer.question.order }}. {{ answer.question.text }}</div>
+        <div class="small text-muted mb-2">{{ answer.question.get_question_type_display }} · max {{ answer.question.points }} points</div>
+        <div class="mb-2"><strong>{% translate "Answer:" %}</strong> {{ answer.selected_choice.text|default:answer.text_answer|default:"No answer" }}</div>
+        <label class="form-label small">{% translate "Points awarded" %}</label>
+        <input class="form-control" style="max-width:160px" type="number" step="0.01" min="0" max="{{ answer.question.points }}" name="points_{{ answer.pk }}" value="{{ answer.points_awarded }}">
+    </div>
+    {% endfor %}
+    <button class="btn btn-primary" type="submit">{% translate "Save grades" %}</button>
+</form>
+</div></div>
+{% endblock %}

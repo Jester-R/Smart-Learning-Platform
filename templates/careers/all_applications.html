@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block page_title %}Candidate applications{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">{% translate "Candidate applications" %}</h1>
+        <div class="small text-secondary">{{ total_count }} applications received</div>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'careers:job_list' %}">{% translate "Browse positions" %}</a>
+</div>
+<div class="mb-3 d-flex flex-wrap gap-2">
+    <a class="btn btn-sm {% if not status %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'careers:all_applications' %}">All ({{ total_count }})</a>
+    {% for value, label in status_choices %}
+    <a class="btn btn-sm {% if status == value %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'careers:all_applications' %}?status={{ value }}">{{ label }}</a>
+    {% endfor %}
+</div>
+<div class="card"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
+    <thead><tr><th>Candidate</th><th>Job</th><th>Company</th><th>CV</th><th>Status</th><th>Applied</th><th></th></tr></thead>
+    <tbody>
+    {% for item in applications %}
+    <tr>
+        <td><strong>{{ item.applicant.full_name }}</strong><div class="small text-secondary">{{ item.applicant.email }}</div></td>
+        <td>{{ item.job.title }}</td>
+        <td>{{ item.job.company.company_name }}</td>
+        <td>{% if item.cv_document %}<a href="{{ item.cv_document.file.url }}" target="_blank" rel="noopener">{{ item.cv_document.title }}</a>{% else %}<span class="text-secondary">—</span>{% endif %}</td>
+        <td><span class="badge text-bg-light">{{ item.get_status_display }}</span></td>
+        <td class="small text-secondary">{{ item.created_at|date:"M d, Y" }}</td>
+        <td class="text-end"><a class="btn btn-sm btn-primary" href="{% url 'careers:application_conversation' pk=item.pk %}"><i class="bi bi-chat-left-text me-1"></i>{% translate "Interview chat" %}</a></td>
+    </tr>
+    {% empty %}<tr><td colspan="7" class="text-center py-4">No applications yet.</td></tr>{% endfor %}
+    </tbody>
+</table></div></div>
+{% endblock %}

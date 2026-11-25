@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block page_title %}{% translate "Refund management" %}{% endblock %}
+{% block content %}
+<div class="card shadow-sm">
+    <div class="card-header bg-white fw-semibold">{% translate "Refund requests" %}</div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>{% translate "Refund" %}</th>
+                    <th>{% translate "Payment" %}</th>
+                    <th>{% translate "Requested by" %}</th>
+                    <th>{% translate "Amount" %}</th>
+                    <th>{% translate "Reason" %}</th>
+                    <th>{% translate "Status" %}</th>
+                    <th>{% translate "Date" %}</th>
+                    <th>{% translate "Action" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for refund in refunds %}
+                <tr>
+                    <td>#{{ refund.pk }}</td>
+                    <td>#{{ refund.payment.pk }} · {{ refund.payment.student.full_name|default:"-" }}</td>
+                    <td>{{ refund.requested_by.full_name|default:"-" }}</td>
+                    <td>₱{{ refund.amount|floatformat:2 }}</td>
+                    <td>{{ refund.reason|truncatechars:60 }}</td>
+                    <td><span class="badge text-bg-{% if refund.status == 'completed' %}success{% elif refund.status == 'approved' %}primary{% elif refund.status == 'rejected' %}danger{% else %}warning{% endif %}">{{ refund.get_status_display }}</span></td>
+                    <td>{{ refund.created_at|date:"M d, Y" }}</td>
+                    <td>
+                        {% if user.role == 'admin' or user.is_superuser %}
+                        <div class="d-flex flex-wrap gap-1">
+                            {% if refund.status == 'requested' %}
+                            <form method="post" action="{% url 'courses:process_refund' refund.pk 'approve' %}">{% csrf_token %}<button class="btn btn-sm btn-outline-success" type="submit">{% translate "Approve" %}</button></form>
+                            <form method="post" action="{% url 'courses:process_refund' refund.pk 'reject' %}">{% csrf_token %}<button class="btn btn-sm btn-outline-danger" type="submit">{% translate "Reject" %}</button></form>
+                            {% elif refund.status == 'approved' %}
+                            <form method="post" action="{% url 'courses:process_refund' refund.pk 'complete' %}">{% csrf_token %}<button class="btn btn-sm btn-success" type="submit">{% translate "Complete" %}</button></form>
+                            {% endif %}
+                        </div>
+                        {% else %}
+                        <span class="text-muted small">{{ refund.processed_by.full_name|default:"-" }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="8" class="text-center text-muted py-4">{% translate "No refund requests found." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

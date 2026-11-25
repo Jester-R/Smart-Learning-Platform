@@ -1,0 +1,8 @@
+﻿{% extends "base.html" %}
+{% block page_title %}Scholarship applications{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">{% translate "My scholarship applications" %}</h1>
+<div class="card"><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Scholarship</th><th>Status</th><th>Submitted</th></tr></thead><tbody>
+{% for item in applications %}<tr><td>{{ item.scholarship.title }}</td><td>{{ item.get_status_display }}</td><td>{{ item.created_at|date:"Y-m-d" }}</td></tr>{% empty %}<tr><td colspan="3" class="text-center py-4">No scholarship applications yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

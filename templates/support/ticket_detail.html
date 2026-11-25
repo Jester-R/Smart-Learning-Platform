@@ -1,0 +1,7 @@
+﻿{% extends "base.html" %}
+{% block page_title %}{{ ticket.subject }}{% endblock %}
+{% block content %}
+<div class="card mb-3"><div class="card-body"><h1 class="h5">{{ ticket.subject }}</h1><p class="small text-secondary">{{ ticket.get_category_display }} &middot; {{ ticket.get_status_display }}</p><p>{{ ticket.description }}</p></div></div>
+<h2 class="h6">Messages</h2><div class="card mb-3"><div class="list-group list-group-flush">{% for message in ticket_messages %}<div class="list-group-item"><strong>{{ message.author.full_name }}</strong>{% if message.is_staff_reply %} <span class="badge text-bg-primary">Staff</span>{% endif %}<div>{{ message.body }}</div></div>{% empty %}<div class="p-3 text-secondary">No replies yet.</div>{% endfor %}</div></div>
+<div class="card"><div class="card-body"><form method="post">{% csrf_token %}{% if can_manage %}<div class="mb-3"><label class="form-label">Status</label><select class="form-select" name="status">{% for value, label in statuses %}<option value="{{ value }}" {% if value == ticket.status %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>{% endif %}<div class="mb-3">{{ form.body }}</div><button class="btn btn-primary" type="submit">Send reply</button></form></div></div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block page_title %}Notifications{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h4 mb-0">{% translate "Notifications" %}</h1>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'notifications:export_pdf' %}"
+            title="{% if user.role == 'admin' or user.is_superuser %}Download a PDF report of all platform notifications{% else %}Download a PDF copy of your notifications{% endif %}">
+            <i class="bi bi-file-earmark-pdf me-1"></i>
+            {% if user.role == 'admin' or user.is_superuser %}Export all PDF{% else %}Export PDF{% endif %}
+        </a>
+        <form method="post" action="{% url 'notifications:mark_all_read' %}">{% csrf_token %}<button class="btn btn-sm btn-outline-secondary" type="submit">{% translate "Mark all as read" %}</button></form>
+    </div>
+</div>
+<div class="card shadow-sm"><ul class="list-group list-group-flush">
+    {% for notification in notifications %}
+    <li class="list-group-item {% if not notification.is_read %}bg-light{% endif %}">
+        <div class="d-flex justify-content-between gap-3">
+            <div>
+                <div class="fw-semibold">{{ notification.title }} <span class="badge text-bg-{{ notification.kind|default:'info' }}">{{ notification.get_kind_display }}</span></div>
+                <div class="text-muted">{{ notification.message }}</div>
+                <div class="small text-muted mt-1">{{ notification.created_at|date:"M d, Y H:i" }}</div>
+            </div>
+            <div class="text-nowrap">
+                {% if not notification.is_read %}<a class="btn btn-sm btn-outline-primary" href="{% url 'notifications:mark_read' notification.pk %}">{% translate "Open" %}</a>{% endif %}
+            </div>
+        </div>
+    </li>
+    {% empty %}<li class="list-group-item text-center text-muted py-5">{% translate "No notifications yet." %}</li>{% endfor %}
+</ul></div>
+{% endblock %}

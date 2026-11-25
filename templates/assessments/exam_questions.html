@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block page_title %}Questions · {{ exam.title }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h1 class="h4 mb-1">{{ exam.title }}</h1><p class="text-muted mb-0">{{ course.code }} · {{ questions|length }} question(s) · {{ exam.total_points }} points</p></div>
+    <div class="d-flex gap-2"><a class="btn btn-sm btn-outline-secondary" href="{% url 'assessments:exam_detail' exam.pk %}">{% translate "Exam" %}</a><a class="btn btn-sm btn-primary" href="{% url 'assessments:exam_question_create' exam.pk %}">{% translate "Add question" %}</a></div>
+</div>
+<div class="card shadow-sm"><div class="list-group list-group-flush">
+    {% for question in questions %}
+    <div class="list-group-item">
+        <div class="d-flex justify-content-between gap-2">
+            <div>
+                <div class="fw-semibold">Q{{ question.order }}. {{ question.text }}</div>
+                <div class="small text-muted">{{ question.get_question_type_display }} · {{ question.points }} pts</div>
+                <ul class="small mt-2 mb-0">
+                    {% for choice in question.choices.all %}<li>{% if choice.is_correct %}<strong class="text-success">✓ {{ choice.text }}</strong>{% else %}{{ choice.text }}{% endif %}</li>{% endfor %}
+                </ul>
+                {% if question.correct_answer %}<div class="small text-muted mt-2">{% translate "Expected answer:" %} <strong>{{ question.correct_answer }}</strong></div>{% endif %}
+            </div>
+            <div class="d-flex gap-1 align-items-start"><a class="btn btn-sm btn-outline-secondary" href="{% url 'assessments:exam_question_edit' question.pk %}">{% translate "Edit" %}</a><a class="btn btn-sm btn-outline-danger" href="{% url 'assessments:exam_question_delete' question.pk %}">{% translate "Delete" %}</a></div>
+        </div>
+    </div>
+    {% empty %}<div class="list-group-item text-center text-muted py-5">{% translate "No questions yet. Add the first question." %}</div>{% endfor %}
+</div></div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} | Site administration{% endblock %}
+
+{% block extrastyle %}
+    {{ block.super }}
+    <script>
+        (function () {
+            try {
+                var theme = localStorage.getItem('slp-theme');
+                if (theme !== 'light' && theme !== 'dark') {
+                    theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                }
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-bs-theme', theme);
+            } catch (error) {
+            }
+        })();
+        document.addEventListener('DOMContentLoaded', function () {
+            var button = document.querySelector('[data-admin-theme-toggle]');
+            if (!button) return;
+            function sync() {
+                var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                button.textContent = theme === 'dark' ? 'Light mode' : 'Dark mode';
+                button.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+            }
+            button.addEventListener('click', function () {
+                var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', theme);
+                document.documentElement.setAttribute('data-bs-theme', theme);
+                try { localStorage.setItem('slp-theme', theme); } catch (error) {}
+                sync();
+            });
+            sync();
+        });
+    </script>
+    <link rel="icon" type="image/svg+xml" href="{% static 'icons/slp-logo.svg' %}">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}?v=purple-3">
+{% endblock %}
+
+{% block branding %}
+<div id="site-name" class="d-flex align-items-center gap-3"><a href="{% url 'admin:index' %}"><span class="admin-brand-mark"><img src="{% static 'icons/slp-logo.svg' %}" alt="" width="30" height="30"></span> {% translate "Site administration" %}</a><button type="button" class="admin-theme-toggle" data-admin-theme-toggle aria-pressed="false">Dark mode</button></div>
+{% endblock %}
+
+{% block welcome-msg %}
+    <span class="admin-welcome">{% translate "Welcome," %} <strong>{% firstof user.get_short_name user.get_username %}</strong>.</span>
+{% endblock %}

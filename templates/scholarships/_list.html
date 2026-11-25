@@ -1,0 +1,5 @@
+﻿<div class="d-flex justify-content-between align-items-center mb-3"><h1 class="h4 mb-0">Scholarships</h1><a class="btn btn-outline-primary" href="{% url 'scholarships:my_applications' %}">My applications</a></div>
+<div class="row g-3">{% for scholarship in scholarships %}<div class="col-lg-6"><div class="card h-100"><div class="card-body">
+<h2 class="h6">{{ scholarship.title }}</h2><div class="small text-secondary mb-2">{{ scholarship.category|default:"General" }}{% if scholarship.university %} &middot; {{ scholarship.university }}{% endif %}</div>
+<p class="small">{{ scholarship.description|truncatechars:160 }}</p><a class="btn btn-sm btn-primary" href="{% url 'scholarships:detail' pk=scholarship.pk %}">View details</a>
+</div></div></div>{% empty %}<div class="col-12"><div class="alert alert-light">No scholarships published yet.</div></div>{% endfor %}</div>

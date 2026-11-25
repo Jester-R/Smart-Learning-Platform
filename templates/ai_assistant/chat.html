@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block page_title %}AI Assistant{% endblock %}
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-3">
+        <div class="card mb-3"><div class="card-header bg-white fw-semibold">{% translate "Conversations" %}</div>
+            <div class="list-group list-group-flush">
+                {% for item in conversations %}
+                <a class="list-group-item list-group-item-action {% if item.pk == conversation.pk %}active{% endif %}" href="{% url 'ai_assistant:chat' %}?conversation={{ item.pk }}">{{ item.title|truncatechars:40 }}<div class="small {% if item.pk == conversation.pk %}text-white-50{% else %}text-muted{% endif %}">{{ item.updated_at|date:"M d, H:i" }}</div></a>
+                {% empty %}<div class="list-group-item text-muted small">{% translate "No conversations yet." %}</div>{% endfor %}
+            </div>
+        </div>
+        <form method="post" action="{% url 'ai_assistant:new' %}">{% csrf_token %}<button class="btn btn-outline-primary w-100" type="submit">{% translate "New conversation" %}</button></form>
+    </div>
+    <div class="col-lg-9">
+        {% if not is_enabled %}<div class="alert alert-warning"><i class="bi bi-pause-circle me-2"></i>{% translate "The AI assistant is currently disabled by an administrator." %}</div>{% elif not is_configured %}<div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>{% translate "The assistant is not configured. Ask an administrator to add a Gemini API token in Platform settings." %}</div>{% endif %}
+        <form id="clearHistoryForm" method="post" action="{% url 'ai_assistant:clear_history' %}" class="d-none">{% csrf_token %}<input type="hidden" name="conversation_id" value="{{ conversation.pk }}"></form>
+        <div id="emptyStateTemplate" class="d-none"><div class="text-muted text-center py-5">{% translate "Ask about a lesson, concept, or study plan. Students cannot use the assistant during an active quiz or exam." %}</div></div>
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <div><span class="fw-semibold">{{ conversation.title }}</span>{% if conversation.course %}<span class="badge text-bg-light ms-2">{{ conversation.course.code }}</span>{% endif %}</div>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="badge text-bg-primary">{% translate "Gemini" %}</span>
+                    <button class="btn btn-sm btn-outline-danger" id="clearHistory" type="button" data-conversation="{{ conversation.pk }}">
+                        <i class="bi bi-trash3 me-1"></i>{% translate "Clear history" %}
+                    </button>
+                </div>
+            </div>
+            <div class="card-body chat-window" id="chatWindow">
+                {% for message in messages %}
+                <div class="chat-message {{ message.role }}">
+                    <div class="chat-bubble">{{ message.content|linebreaksbr }}</div>
+                    <div class="chat-meta">{{ message.get_role_display }} · {{ message.created_at|date:"H:i" }}</div>
+                </div>
+                {% empty %}
+                <div class="text-muted text-center py-5" id="emptyState">{% translate "Ask about a lesson, concept, or study plan. Students cannot use the assistant during an active quiz or exam." %}</div>
+                {% endfor %}
+            </div>
+            <div class="card-footer bg-white">
+                {% if is_enabled and is_configured %}
+                <form id="chatForm" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <textarea class="form-control" id="messageInput" rows="1" maxlength="2000" placeholder="Ask the learning assistant..." required></textarea>
+                    <button class="btn btn-primary" id="sendButton" type="submit">{% translate "Send" %}</button>
+                </form>
+                {% else %}
+                <div class="text-muted small">{% translate "Chat is unavailable until an administrator enables and configures the assistant." %}</div>
+                {% endif %}
+                <div class="small text-danger mt-2 d-none" id="chatError"></div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+{% if is_enabled and is_configured %}
+<script>
+const form = document.getElementById('chatForm');
+const input = document.getElementById('messageInput');
+const windowEl = document.getElementById('chatWindow');
+const errorEl = document.getElementById('chatError');
+const sendButton = document.getElementById('sendButton');
+const csrfToken = form.querySelector('[name=csrfmiddlewaretoken]').value;
+const conversationId = {{ conversation.pk }};
+
+function appendMessage(role, content) {
+    const empty = document.getElementById('emptyState');
+    if (empty) empty.remove();
+    const wrapper = document.createElement('div');
+    wrapper.className = 'chat-message ' + role;
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble';
+    bubble.textContent = content;
+    const meta = document.createElement('div');
+    meta.className = 'chat-meta';
+    meta.textContent = role === 'assistant' ? 'Assistant' : 'You';
+    wrapper.appendChild(bubble);
+    wrapper.appendChild(meta);
+    windowEl.appendChild(wrapper);
+    windowEl.scrollTop = windowEl.scrollHeight;
+    return wrapper;
+}
+
+form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+    errorEl.classList.add('d-none');
+    appendMessage('user', message);
+    input.value = '';
+    sendButton.disabled = true;
+    const pending = appendMessage('assistant', 'Thinking...');
+    try {
+        const response = await fetch('{% url "ai_assistant:send" %}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+            body: JSON.stringify({ message: message, conversation_id: conversationId })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Unable to get a response.');
+        pending.querySelector('.chat-bubble').textContent = data.reply;
+    } catch (error) {
+        pending.remove();
+        errorEl.textContent = error.message;
+        errorEl.classList.remove('d-none');
+    } finally {
+        sendButton.disabled = false;
+        input.focus();
+    }
+});
+
+input.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+        form.requestSubmit();
+    }
+});
+</script>
+{% endif %}
+<script>
+(function () {
+    const clearButton = document.getElementById('clearHistory');
+    if (!clearButton) return;
+    const clearForm = document.getElementById('clearHistoryForm');
+    const token = clearForm.querySelector('[name=csrfmiddlewaretoken]').value;
+    const errorEl = document.getElementById('chatError');
+    clearButton.addEventListener('click', async () => {
+        if (!window.confirm('{% translate "Clear this conversation history? This cannot be undone." %}')) return;
+        clearButton.disabled = true;
+        try {
+            const response = await fetch(clearForm.action, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRFToken': token },
+                body: JSON.stringify({ conversation_id: clearForm.querySelector('[name=conversation_id]').value })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Unable to clear history.');
+            document.getElementById('chatWindow').innerHTML =
+                document.getElementById('emptyStateTemplate').innerHTML;
+        } catch (error) {
+            if (errorEl) {
+                errorEl.textContent = error.message;
+                errorEl.classList.remove('d-none');
+            }
+        } finally {
+            clearButton.disabled = false;
+        }
+    });
+})();
+</script>
+{% endblock %}

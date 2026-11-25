@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load app_extras %}
+{% block page_title %}Courses{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h1 class="h4 mb-1">{% translate "Courses" %}</h1><p class="text-muted mb-0">{% if can_manage %}Manage and publish your courses.{% else %}Browse published courses and enroll.{% endif %}</p></div>
+    {% if can_manage %}<a class="btn btn-primary btn-sm" href="{% url 'courses:create' %}">{% translate "New course" %}</a>{% endif %}
+</div>
+<form class="row g-2 mb-3" method="get">
+    <div class="col-md-4"><input class="form-control md-field" type="search" name="q" value="{{ query }}" placeholder="Search title, code, or description" aria-label="Search courses"></div>
+    <div class="col-md-3">
+        <select class="form-select md-field" name="category" aria-label="Category">
+            <option value="">{% translate "All categories" %}</option>
+            {% for category in categories %}<option value="{{ category.pk }}" {% if category_id == category.pk|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>{% endfor %}
+        </select>
+    </div>
+    {% if can_manage %}
+    <div class="col-md-2">
+        <select class="form-select md-field" name="status" aria-label="Status">
+            <option value="">{% translate "Any status" %}</option>
+            <option value="draft" {% if status == 'draft' %}selected{% endif %}>{% translate "Draft" %}</option>
+            <option value="published" {% if status == 'published' %}selected{% endif %}>{% translate "Published" %}</option>
+            <option value="archived" {% if status == 'archived' %}selected{% endif %}>{% translate "Archived" %}</option>
+        </select>
+    </div>
+    {% endif %}
+    <div class="col-auto"><button class="btn btn-outline-secondary" type="submit"><i class="bi bi-funnel me-1"></i>{% translate "Filter" %}</button></div>
+</form>
+<div class="d-flex flex-wrap gap-2 mb-4" role="group" aria-label="Quick status filters">
+    <a class="md-chip {% if not status %}active{% endif %}" href="{% url 'courses:list' %}{% if query or category_id %}?{% if query %}q={{ query|urlencode }}{% endif %}{% if query and category_id %}&amp;{% endif %}{% if category_id %}category={{ category_id }}{% endif %}{% endif %}">{% translate "All courses" %}</a>
+    <a class="md-chip {% if status == 'published' %}active{% endif %}" href="{% url 'courses:list' %}?status=published{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if category_id %}&amp;category={{ category_id }}{% endif %}">{% translate "Published" %}</a>
+    {% if can_manage %}
+    <a class="md-chip {% if status == 'draft' %}active{% endif %}" href="{% url 'courses:list' %}?status=draft{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if category_id %}&amp;category={{ category_id }}{% endif %}">{% translate "Drafts" %}</a>
+    <a class="md-chip {% if status == 'archived' %}active{% endif %}" href="{% url 'courses:list' %}?status=archived{% if query %}&amp;q={{ query|urlencode }}{% endif %}{% if category_id %}&amp;category={{ category_id }}{% endif %}">{% translate "Archived" %}</a>
+    {% endif %}
+</div>
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4">
+    {% for course in courses %}
+    <div class="col">
+        <div class="card course-card h-100 shadow-sm">
+            {% if course.thumbnail %}<img src="{{ course.thumbnail.url }}" class="card-img-top course-thumb" alt="{{ course.title }}">{% endif %}
+            <div class="card-body">
+                <div class="d-flex justify-content-between gap-2 mb-2">
+                    <span class="badge text-bg-primary">{{ course.code }}</span>
+                    <span class="badge {% if course.status == 'published' %}text-bg-success{% else %}text-bg-secondary{% endif %}">{{ course.get_status_display }}</span>
+                </div>
+                <h2 class="h5"><a class="text-decoration-none" href="{{ course.get_absolute_url }}">{{ course.title }}</a></h2>
+                <p class="text-muted small mb-2">{{ course.description|truncatechars:140 }}</p>
+                <div class="small text-muted mb-2"><i class="bi bi-person"></i> {{ course.teacher.full_name }}{% if course.category %} · <i class="bi bi-tag"></i> {{ course.category.name }}{% endif %}</div>
+                <div class="d-flex flex-wrap gap-2 small">
+                    <span class="badge text-bg-light">{{ course.get_difficulty_display }}</span>
+                    <span class="badge text-bg-light">{{ course.duration_hours }} h</span>
+                    <span class="badge text-bg-light">{{ course.student_count }} students</span>
+                    <span class="badge text-bg-success">₱{{ course.price|floatformat:2 }}</span>
+                </div>
+            </div>
+            <div class="card-footer bg-white d-flex gap-2">
+                <a class="btn btn-sm btn-outline-primary" href="{{ course.get_absolute_url }}">{% translate "Open" %}</a>
+                {% if can_manage %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'courses:edit' course.slug %}">{% translate "Edit" %}</a>{% endif %}
+                {% if not can_manage %}
+                    {% if course.id in enrolled_ids %}<span class="badge text-bg-success align-self-center">{% translate "Enrolled" %}</span>
+                    {% else %}<a class="btn btn-sm btn-primary" href="{{ course.get_absolute_url }}">{% translate "View &amp; enroll" %}</a>{% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><div class="card"><div class="empty-state">
+        <span class="empty-state__icon"><i class="bi bi-search"></i></span>
+        <span class="empty-state__title">{% translate "No matching courses" %}</span>
+        <p>{% translate "Try a different search term or clear the filters." %}</p>
+    </div></div></div>
+    {% endfor %}
+</div>
+{% endblock %}

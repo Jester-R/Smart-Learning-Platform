@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="slp-logo-title">
+  <title id="slp-logo-title">Smart Learning Platform</title>
+  <defs>
+    <linearGradient id="slp-logo-gradient" x1="8" y1="6" x2="56" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7C3AED"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect x="2" y="2" width="60" height="60" rx="17" fill="url(#slp-logo-gradient)"/>
+  <rect x="2.75" y="2.75" width="58.5" height="58.5" rx="16.25" fill="none" stroke="#FFFFFF" stroke-opacity="0.32" stroke-width="1.5"/>
+  <path d="M32 12 10 21.5 32 31 54 21.5 32 12Z" fill="#FFFFFF"/>
+  <path d="M22 26.5v7.2c0 3.9 4.5 7 10 7s10-3.1 10-7v-7.2L32 31.6 22 26.5Z" fill="#EDE9FE"/>
+  <path d="M52 21.5v16.2" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="52" cy="40.5" r="2.6" fill="#FFFFFF"/>
+  <path d="M18 44.5c4.7-2.6 9.3-2.6 14 0 4.7-2.6 9.3-2.6 14 0v8c-4.7-2.6-9.3-2.6-14 0-4.7-2.6-9.3-2.6-14 0v-8Z" fill="#C4B5FD" stroke="#FFFFFF" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M32 44.5v8" fill="none" stroke="#5B21B6" stroke-width="2" stroke-linecap="round"/>
+</svg>

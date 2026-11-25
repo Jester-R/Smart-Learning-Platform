@@ -1,0 +1,7 @@
+﻿{% extends "base.html" %}
+{% block page_title %}Manage FAQs{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">{% translate "Manage FAQs" %}</h1>
+<div class="card mb-3"><div class="card-body"><form method="post">{% csrf_token %}{% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}</div>{% endfor %}<button class="btn btn-primary" type="submit">Save FAQ</button></form></div></div>
+<div class="card"><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Question</th><th>Published</th></tr></thead><tbody>{% for faq in faqs %}<tr><td>{{ faq.question }}</td><td>{% if faq.is_published %}Yes{% else %}No{% endif %}</td></tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

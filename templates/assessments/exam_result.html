@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}Exam result{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h1 class="h4 mb-1">{{ exam.title }}</h1><p class="text-muted mb-0">{{ attempt.student.full_name }} · Attempt {{ attempt.attempt_number }} · {{ course.code }}</p></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{% url 'assessments:exam_detail' exam.pk %}">{% translate "Back to exam" %}</a>
+</div>
+<div class="card mb-4"><div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+    <div><div class="text-muted small">{% translate "Score" %}</div><div class="display-5 fw-semibold">{{ attempt.score }} <span class="fs-5 text-muted">/ {{ attempt.max_score }}</span></div></div>
+    <div><div class="text-muted small">{% translate "Status" %}</div><span class="badge fs-6 text-bg-light">{{ attempt.get_status_display }}</span></div>
+    <div><div class="text-muted small">{% translate "Submitted" %}</div><div>{{ attempt.submitted_at|date:"M d, Y H:i"|default:"—" }}</div></div>
+    {% if is_manager %}<a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:exam_grade_attempt' attempt.pk %}">{% translate "Grade essays" %}</a>{% endif %}
+</div></div>
+{% if not visible %}
+<div class="alert alert-info">{% translate "Detailed results are not available yet for this attempt." %}</div>
+{% else %}
+<div class="card"><div class="card-header bg-white fw-semibold">{% translate "Answer review" %}</div><div class="list-group list-group-flush">
+    {% for answer in answers %}
+    <div class="list-group-item">
+        <div class="d-flex justify-content-between gap-2"><div class="fw-semibold">Q{{ answer.question.order }}. {{ answer.question.text }}</div><span class="badge {% if answer.is_correct %}text-bg-success{% elif answer.is_correct is False %}text-bg-danger{% else %}text-bg-secondary{% endif %}">{{ answer.points_awarded }} / {{ answer.question.points }}</span></div>
+        <div class="small mt-2">Your answer: {{ answer.selected_choice.text|default:answer.text_answer|default:"No answer" }}</div>
+        <div class="small text-success">Correct answer: {% for choice in answer.question.choices.all %}{% if choice.is_correct %}{{ choice.text }}{% endif %}{% endfor %}{% if answer.question.correct_answer %}{{ answer.question.correct_answer }}{% endif %}</div>
+        {% if answer.question.explanation %}<div class="small text-muted mt-1">{{ answer.question.explanation }}</div>{% endif %}
+    </div>
+    {% empty %}<div class="list-group-item text-muted">{% translate "No answers recorded." %}</div>{% endfor %}
+</div></div>
+{% endif %}
+{% endblock %}

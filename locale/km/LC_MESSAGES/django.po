@@ -1,0 +1,1217 @@
+msgid ""
+msgstr "Project-Id-Version: Smart Learning Platform\nLanguage: km\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\n"
+
+msgid "A=True, B=False for true/false questions."
+msgstr "A=ពិត, B=មិនពិត សម្រាប់សំណួរ ពិត/មិនពិត។"
+
+msgid "AI Assistant"
+msgstr "ជំនួយការ AI"
+
+msgid "AI and platform controls"
+msgstr "ការគ្រប់គ្រង AI និងផ្លែតហ្វម"
+
+msgid "API tokens are encrypted before storage and never shown after saving."
+msgstr "API tokens ត្រូវបានកូដនីយកម្មមុនពេលរក្សាទុក ហើយនឹងមិនបង្ហាញឡើងវិញទេបន្ទាប់ពីរចួចរាល់។"
+
+msgid "Absent"
+msgstr "អវត្តមាន"
+
+msgid "Account"
+msgstr "គណនី"
+
+msgid "Across all courses"
+msgstr "នៅគ្រប់វគ្គសិក្សាទាំងអស់"
+
+msgid "Action"
+msgstr "សកម្មភាព"
+
+msgid "Actions"
+msgstr "សកម្មភាព"
+
+msgid "Active"
+msgstr "សកម្ម"
+
+msgid "Active learners"
+msgstr "អ្នកសិក្សាសកម្ម"
+
+msgid "Activity log"
+msgstr "កំណត់ហេតុសកម្មភាព"
+
+msgid "Add Lesson"
+msgstr "បន្ថែមមេរៀន"
+
+msgid "Add Video Lesson"
+msgstr "បន្ថែមមេរៀនវីដេអូ"
+
+msgid "Add lesson"
+msgstr "បន្ថែមមេរៀន"
+
+msgid "Add question"
+msgstr "បន្ថែមសំណួរ"
+
+msgid "Add user"
+msgstr "បន្ថែមអ្នកប្រើប្រាស់"
+
+msgid "Add your first YouTube video lesson"
+msgstr "បន្ថែមមេរៀនវីដេអូ YouTube ដំបូងរបស់អ្នក"
+
+msgid "Add your first video lesson"
+msgstr "បន្ថែមមេរៀនវីដេអូដំបូងរបស់អ្នក"
+
+msgid "Add, organize, preview, and manage video teaching content across your courses."
+msgstr "បន្ថែម រៀបចំ មើលជាមុន និងគ្រប់គ្រងមាតិកាបង្រៀនជាវីដេអូនៅក្នុងវគ្គសិក្សារបស់អ្នក។"
+
+msgid "Admin toolkit"
+msgstr "ប្រអប់ឧបករណ៍អ្នកគ្រប់គ្រង"
+
+msgid "Administration"
+msgstr "ការគ្រប់គ្រង"
+
+msgid "Administrator control center"
+msgstr "មជ្ឈមណ្ឌលបញ្ជាអ្នកគ្រប់គ្រង"
+
+msgid "Administrator controls"
+msgstr "ការគ្រប់គ្រងរបស់អ្នកគ្រប់គ្រង"
+
+msgid "Administrators"
+msgstr "អ្នកគ្រប់គ្រង"
+
+msgid "Advanced database tools"
+msgstr "ឧបករណ៍ទិន្នន័យកម្រិតខ្ពស់"
+
+msgid "All"
+msgstr "ទាំងអស់"
+
+msgid "All Courses"
+msgstr "វគ្គសិក្សាទាំងអស់"
+
+msgid "All Statuses"
+msgstr "ស្ថានភាពទាំងអស់"
+
+msgid "All categories"
+msgstr "ជំពូកទាំងអស់"
+
+msgid "All certificates"
+msgstr "វិញ្ញាបនបត្រទាំងអស់"
+
+msgid "All roles"
+msgstr "តួនាទីទាំងអស់"
+
+msgid "Already registered?"
+msgstr "បានចុះឈ្មោះរួចហើយមែនទេ?"
+
+msgid "Announcement"
+msgstr "ការប្រកាស"
+
+msgid "Announcements"
+msgstr "ការប្រកាសទាំងអស់"
+
+msgid "Answer review"
+msgstr "ការពិនិត្យចម្លើយ"
+
+msgid "Answer:"
+msgstr "ចម្លើយ៖"
+
+msgid "Any status"
+msgstr "ស្ថានភាពណាមួយ"
+
+msgid "Archived"
+msgstr "បានបណ្ដោះអាសន្ន"
+
+msgid "Ask about a lesson, concept, or study plan. Students cannot use the assistant during an active quiz or exam."
+msgstr "សួរអំពីមេរៀន គំនិត ឬផែនការសិក្សា។ សិស្សមិនអាចប្រើប្រាស់ជំនួយការបានទេ ក្នុងអំឡុងពេលធ្វើតេស្ត ឬប្រឡង។"
+
+msgid "Assignment"
+msgstr "កិច្ចការ"
+
+msgid "Assignments"
+msgstr "កិច្ចការ"
+
+msgid "Attempts"
+msgstr "ការព្យាយាម"
+
+msgid "Attendance"
+msgstr "វត្តមាន"
+
+msgid "Attendance by course"
+msgstr "វត្តមានតាមមុខវិជ្ជា"
+
+msgid "Attendance history"
+msgstr "ប្រវត្តិនៃវត្តមាន"
+
+msgid "Attendance rate"
+msgstr "អត្រាវត្តមាន"
+
+msgid "Attendance rate counts present and late sessions. Records are maintained by your instructors."
+msgstr "អត្រាវត្តមានរាប់បញ្ចូលទាំងការមកទាន់ពេល និងការមកយឺត។ កំណត់ត្រាត្រូវកត់ត្រាដោយសាស្ត្រាចារ្យរបស់អ្នក។"
+
+msgid "Audit trail"
+msgstr "ប្រវត្តិនៃការស៊ើបអង្កេត"
+
+msgid "Availability"
+msgstr "ភាពអាចរកបាន"
+
+msgid "Average grade"
+msgstr "ពិន្ទុមធ្យមភាគ"
+
+msgid "Awaiting grading"
+msgstr "រង់ចាំការដាក់ពិន្ទុ"
+
+msgid "Back"
+msgstr "ត្រឡប់ក្រោយ"
+
+msgid "Back to Course Overview"
+msgstr "ត្រឡប់ទៅសេចក្តីសង្ខេបមុខវិជ្ជា"
+
+msgid "Back to course"
+msgstr "ត្រឡប់ទៅមុខវិជ្ជាវិញ"
+
+msgid "Back to exam"
+msgstr "ត្រឡប់ទៅការប្រឡង"
+
+msgid "Back to quiz"
+msgstr "ត្រឡប់ទៅការធ្វើតេស្ត"
+
+msgid "Back to reports"
+msgstr "ត្រឡប់ទៅរបាយការណ៍"
+
+msgid "Broadcast to your audience"
+msgstr "ផ្សាយផ្ទាល់ទៅកាន់ទស្សនិកជនរបស់អ្នក"
+
+msgid "Browse"
+msgstr "រុករក"
+
+msgid "Browse Courses"
+msgstr "រុករកមុខវិជ្ជា"
+
+msgid "Browse the catalog"
+msgstr "រុករកបញ្ជីមុខវិជ្ជា"
+
+msgid "By enrollment"
+msgstr "តាមការចុះឈ្មោះ"
+
+msgid "Cancel"
+msgstr "បោះបង់"
+
+msgid "Certificate"
+msgstr "វិញ្ញាបនបត្រ"
+
+msgid "Certificate ID"
+msgstr "អត្តសញ្ញាណវិញ្ញាបនបត្រ"
+
+msgid "Certificate of completion"
+msgstr "វិញ្ញាបនបត្របញ្ជាក់ការសិក្សាចប់"
+
+msgid "Certificates"
+msgstr "វិញ្ញាបនបត្រ"
+
+msgid "Certificates issued"
+msgstr "វិញ្ញាបនបត្រដែលបានចេញ"
+
+msgid "Chat is unavailable until an administrator enables and configures the assistant."
+msgstr "មុខងារជជែកមិនទាន់អាចប្រើបានទេ រហូតទាល់តែអ្នកគ្រប់គ្រងបើក និងកំណត់រចនាសម្ព័ន្ធជំនួយការ។"
+
+msgid "Choose a video from your computer (MP4, WebM, MOV...) as an alternative to a YouTube link. Students will watch it with the built-in player on the lesson page."
+msgstr "ជ្រើសរើសវីដេអូពីកុំព្យូទ័ររបស់អ្នក (MP4, WebM, MOV...) ជំនួសឱ្យតំណភ្ជាប់ YouTube។ សិស្សនឹងទស្សនាវាជាមួយកម្មវិធីចាក់វីដេអូដែលមានស្រាប់នៅលើទំព័រមេរៀន។"
+
+msgid "Claim certificate"
+msgstr "ទទួលយកវិញ្ញាបនបត្រ"
+
+msgid "Close"
+msgstr "បិទ"
+
+msgid "Closed"
+msgstr "បានបិទ"
+
+msgid "Communication"
+msgstr "ការប្រាស្រ័យទាក់ទង"
+
+msgid "Community mix"
+msgstr "សហគមន៍ចម្រុះ"
+
+msgid "Completed"
+msgstr "បានបញ្ចប់"
+
+msgid "Completion"
+msgstr "ការបញ្ចប់"
+
+msgid "Confirm password"
+msgstr "បញ្ជាក់ពាក្យសម្ងាត់"
+
+msgid "Connected"
+msgstr "បានភ្ជាប់"
+
+msgid "Connection"
+msgstr "ការភ្ជាប់"
+
+msgid "Continue Watching Video Lessons"
+msgstr "បន្តទស្សនាវីដេអូមេរៀន"
+
+msgid "Continue learning"
+msgstr "បន្តការសិក្សា"
+
+msgid "Continue watching video lessons and track your learning progress."
+msgstr "បន្តទស្សនាវីដេអូមេរៀន និងតាមដានវឌ្ឍនភាពសិក្សារបស់អ្នក។"
+
+msgid "Conversations"
+msgstr "ការសន្ទនា"
+
+msgid "Correct option"
+msgstr "ជម្រើសត្រឹមត្រូវ"
+
+msgid "Course"
+msgstr "វគ្គសិក្សា"
+
+msgid "Course Lessons"
+msgstr "មេរៀននៃវគ្គសិក្សា"
+
+msgid "Course Overview"
+msgstr "ទិដ្ឋភាពទូទៅនៃវគ្គសិក្សា"
+
+msgid "Course Progress"
+msgstr "វឌ្ឍនភាពវគ្គសិក្សា"
+
+msgid "Course performance"
+msgstr "ប្រសិទ្ធភាពវគ្គសិក្សា"
+
+msgid "Course pipeline"
+msgstr "ដំណើរការវគ្គសិក្សា"
+
+msgid "Courses"
+msgstr "វគ្គសិក្សា"
+
+msgid "Courses, video lessons, materials, assignments, quizzes, midterm exams, progress tracking, reports, and certificates for administrators, teachers, and students."
+msgstr "វគ្គសិក្សា មេរៀនវីដេអូ ឯកសារ កិច្ចការផ្ទះ កម្រងសំណួរ ការប្រឡងពាក់កណ្តាលឆមាស ការតាមដានវឌ្ឍនភាព របាយការណ៍ និងវិញ្ញាបនបត្រសម្រាប់អ្នកគ្រប់គ្រង គ្រូបង្រៀន និងសិស្ស។"
+
+msgid "Create a student account"
+msgstr "បង្កើតគណនីសិស្ស"
+
+msgid "Create account"
+msgstr "បង្កើតគណនី"
+
+msgid "Create learning content"
+msgstr "បង្កើតមាតិកាសិក្សា"
+
+msgid "Create student account"
+msgstr "បង្កើតគណនីសិស្ស"
+
+msgid "Create your first course to get started."
+msgstr "បង្កើតវគ្គសិក្សាដំបូងរបស់អ្នកដើម្បីចាប់ផ្តើម។"
+
+msgid "Dashboard"
+msgstr "ផ្ទាំងគ្រប់គ្រង"
+
+msgid "Database"
+msgstr "មូលដ្ឋានទិន្នន័យ"
+
+msgid "Database engine"
+msgstr "ម៉ាស៊ីនមូលដ្ឋានទិន្នន័យ"
+
+msgid "Database online"
+msgstr "មូលដ្ឋានទិន្នន័យអនឡាញ"
+
+msgid "Date"
+msgstr "កាលបរិច្ឆេទ"
+
+msgid "Delete"
+msgstr "លុប"
+
+msgid "Delete course"
+msgstr "លុបវគ្គសិក្សា"
+
+msgid "Description"
+msgstr "ការពិពណ៌នា"
+
+msgid "Detailed results are not available yet for this attempt."
+msgstr "មិនទាន់មានលទ្ធផលលម្អិតសម្រាប់ការសាកល្បងនេះនៅឡើយទេ។"
+
+msgid "Details"
+msgstr "ព័ត៌មានលម្អិត"
+
+msgid "Download assignment attachment"
+msgstr "ទាញយកឯកសារភ្ជាប់កិច្ចការ"
+
+msgid "Download video"
+msgstr "ទាញយកវីដេអូ"
+
+msgid "Draft"
+msgstr "សេចក្តីព្រាង"
+
+msgid "Draft Lessons"
+msgstr "មេរៀនព្រាង"
+
+msgid "Draft Mode"
+msgstr "របៀបព្រាង"
+
+msgid "Drafts"
+msgstr "សេចក្តីព្រាង"
+
+msgid "Drafts Only"
+msgstr "តែសេចក្តីព្រាងប៉ុណ្ណោះ"
+
+msgid "Due"
+msgstr "កាលបរិច្ឆេទកំណត់"
+
+msgid "Duration"
+msgstr "រយៈពេល"
+
+msgid "Edit"
+msgstr "កែសម្រួល"
+
+msgid "Edit course"
+msgstr "កែសម្រួលវគ្គសិក្សា"
+
+msgid "Email"
+msgstr "អ៊ីមែល"
+
+msgid "Email address"
+msgstr "អាសយដ្ឋានអ៊ីមែល"
+
+msgid "English"
+msgstr "អង់គ្លេស"
+
+msgid "Enroll now"
+msgstr "ចុះឈ្មោះឥឡូវនេះ"
+
+msgid "Enrolled"
+msgstr "បានចុះឈ្មោះ"
+
+msgid "Enrollment by course"
+msgstr "ការចុះឈ្មោះតាមវគ្គសិក្សា"
+
+msgid "Enrollment health"
+msgstr "ស្ថានភាពនៃការចុះឈ្មោះ"
+
+msgid "Enrollment, grading, and assessment insights."
+msgstr "ព័ត៌មានយល់ដឹងអំពីការចុះឈ្មោះ ការផ្តល់ពិន្ទុ និងការវាយតម្លៃ។"
+
+msgid "Enrollments"
+msgstr "ការចុះឈ្មោះ"
+
+msgid "Enter the certificate ID or verification code."
+msgstr "បញ្ចូល ID វិញ្ញាបនបត្រ ឬកូដផ្ទៀងផ្ទាត់។"
+
+msgid "Environment status"
+msgstr "ស្ថានភាពបរិស្ថាន"
+
+msgid "Exam"
+msgstr "ការប្រឡង"
+
+msgid "Exam average"
+msgstr "ពិន្ទុមធ្យមភាគការប្រឡង"
+
+msgid "Exams"
+msgstr "ការប្រឡង"
+
+msgid "Excused"
+msgstr "បានលើកលែង"
+
+msgid "Expected answer:"
+msgstr "ចម្លើយដែលរំពឹងទុក៖"
+
+msgid "Expected short answer"
+msgstr "ចម្លើយខ្លីដែលរំពឹងទុក"
+
+msgid "Explanation (optional)"
+msgstr "ការពន្យល់ (ជម្រើស)"
+
+msgid "Export PDF"
+msgstr "នាំចេញជា PDF"
+
+msgid "External video lesson available"
+msgstr "មានមេរៀនវីដេអូខាងក្រៅ"
+
+msgid "Failed"
+msgstr "បរាជ័យ"
+
+msgid "Filter"
+msgstr "តម្រង"
+
+msgid "Final grade"
+msgstr "ពិន្ទុចុងក្រោយ"
+
+msgid "Find courses"
+msgstr "ស្វែងរកវគ្គសិក្សា"
+
+msgid "First name"
+msgstr "ឈ្មោះ"
+
+msgid "From Your Enrolled Courses"
+msgstr "ពីវគ្គសិក្សាដែលអ្នកបានចុះឈ្មោះ"
+
+msgid "Full log"
+msgstr "កំណត់ហេតុពេញលេញ"
+
+msgid "Gemini"
+msgstr "Gemini"
+
+msgid "Gemini AI Assistant"
+msgstr "ជំនួយការ Gemini AI"
+
+msgid "Go to course &rarr;"
+msgstr "ទៅកាន់វគ្គសិក្សា &rarr;"
+
+msgid "Grade"
+msgstr "ពិន្ទុ"
+
+msgid "Grade attempt"
+msgstr "ដាក់ពិន្ទុការធ្វើតេស្ត"
+
+msgid "Grade distribution"
+msgstr "ការបែងចែកពិន្ទុ"
+
+msgid "Grade essays"
+msgstr "ដាក់ពិន្ទុអត្ថបទសំណេរ"
+
+msgid "Grade submission"
+msgstr "ដាក់ពិន្ទុកិច្ចការដែលបានប្រគល់"
+
+msgid "Grades and enrollments"
+msgstr "ពិន្ទុ និងការចុះឈ្មោះ"
+
+msgid "Here is the pulse of your learning platform. Manage people, courses, and results from one place."
+msgstr "នេះជាបេះដូងនៃប្រព័ន្ធសិក្សារបស់អ្នក។ គ្រប់គ្រងអ្នកប្រើប្រាស់ វគ្គសិក្សា និងលទ្ធផលពីកន្លែងតែមួយ។"
+
+msgid "Hidden from students"
+msgstr "បានលាក់មិនឱ្យសិស្សឃើញ"
+
+msgid "IP"
+msgstr "IP"
+
+msgid "If unchecked, this lesson will be saved as a draft and hidden from enrolled students."
+msgstr "ប្រសិនបើមិនបានគ្រីកទេ មេរៀននេះនឹងត្រូវរក្សាទុកជាសេចក្តីព្រាង ហើយលាក់មិនឱ្យសិស្សដែលបានចុះឈ្មោះមើលឃើញឡើយ។"
+
+msgid "Inactive"
+msgstr "អសកម្ម"
+
+msgid "Instructions"
+msgstr "ការណែនាំ"
+
+msgid "Interactive"
+msgstr "អន្តរកម្ម"
+
+msgid "Issued"
+msgstr "បានចេញ"
+
+msgid "Issued completion certificates and verification."
+msgstr "បានចេញវិញ្ញាបនបត្របញ្ចប់ការសិក្សា និងការផ្ទៀងផ្ទាត់។"
+
+msgid "Joined"
+msgstr "បានចូលរួម"
+
+msgid "Language"
+msgstr "ភាសា"
+
+msgid "Last name"
+msgstr "នាមត្រកូល"
+
+msgid "Late"
+msgstr "យឺត"
+
+msgid "Late submissions"
+msgstr "ការប្រគល់យឺតពេល"
+
+msgid "Learn, teach, and grow in one place."
+msgstr "រៀន បង្រៀន និងអភិវឌ្ឍនៅកន្លែងតែមួយ។"
+
+msgid "Learning"
+msgstr "ការសិក្សា"
+
+msgid "Learning management system"
+msgstr "ប្រព័ន្ធគ្រប់គ្រងការសិក្សា"
+
+msgid "Learning materials"
+msgstr "សម្ភារសិក្សា"
+
+msgid "Learning objectives"
+msgstr "គោលបំណងសិក្សា"
+
+msgid "Lesson &amp; Chapter"
+msgstr "មេរៀន &amp; ជំពូក"
+
+msgid "Lesson Notes &amp; Resources"
+msgstr "កំណត់ចំណាំមេរៀន &amp; ធនធាន"
+
+msgid "Lesson Title"
+msgstr "ចំណងជើងមេរៀន"
+
+msgid "Lessons"
+msgstr "មេរៀន"
+
+msgid "Lessons completed"
+msgstr "មេរៀនដែលបានបញ្ចប់"
+
+msgid "Live"
+msgstr "ផ្ទាល់"
+
+msgid "Live Video Preview"
+msgstr "ការមើលវីដេអូនាំមុខផ្ទាល់"
+
+msgid "Live YouTube Preview"
+msgstr "ការមើល YouTube នាំមុខផ្ទាល់"
+
+msgid "Live overview"
+msgstr "ការទស្សនាផ្ទាល់"
+
+msgid "Manage"
+msgstr "គ្រប់គ្រង"
+
+msgid "Manage Videos"
+msgstr "គ្រប់គ្រងវីដេអូ"
+
+msgid "Manage accounts and export a report."
+msgstr "គ្រប់គ្រងគណនី និងទាញយករបាយការណ៍។"
+
+msgid "Manage accounts and roles"
+msgstr "គ្រប់គ្រងគណនី និងតួនាទី"
+
+msgid "Manage the AI assistant and downloads for uploaded lesson videos."
+msgstr "គ្រប់គ្រងជំនួយការ AI និងការទាញយកវីដេអូមេរៀនដែលបានបង្ហោះ។"
+
+msgid "Manage users"
+msgstr "គ្រប់គ្រងអ្នកប្រើប្រាស់"
+
+msgid "Manage your courses, YouTube video lessons, and student grading."
+msgstr "គ្រប់គ្រងវគ្គសិក្សា វីដេអូមេរៀន YouTube និងការដាក់ពិន្ទុសិស្សរបស់អ្នក។"
+
+msgid "Mark all as read"
+msgstr "សំគាល់ថាបានអានទាំងអស់"
+
+msgid "Mark as Completed"
+msgstr "សំគាល់ថាបានរួចរាល់"
+
+msgid "Menu"
+msgstr "ម៉ឺនុយ"
+
+msgid "Midterm"
+msgstr "ពាក់កណ្តាលឆមាស"
+
+msgid "Midterm examination"
+msgstr "ការប្រឡងពាក់កណ្តាលឆមាស"
+
+msgid "My Attendance"
+msgstr "វត្តមានរបស់ខ្ញុំ"
+
+msgid "My Enrollments"
+msgstr "ការចុះឈ្មោះរបស់ខ្ញុំ"
+
+msgid "My courses"
+msgstr "វគ្គសិក្សារបស់ខ្ញុំ"
+
+msgid "My enrollments"
+msgstr "ការចុះឈ្មោះរបស់ខ្ញុំ"
+
+msgid "My profile"
+msgstr "ព័ត៌មានរូបថតរបស់ខ្ញុំ"
+
+msgid "Name"
+msgstr "ឈ្មោះ"
+
+msgid "New Announcement"
+msgstr "ការប្រកាសថ្មី"
+
+msgid "New Course"
+msgstr ""
+
+msgid "New announcement"
+msgstr "ការប្រកាសថ្មី"
+
+msgid "New assignment"
+msgstr ""
+
+msgid "New conversation"
+msgstr ""
+
+msgid "New course"
+msgstr ""
+
+msgid "New exam"
+msgstr ""
+
+msgid "New quiz"
+msgstr ""
+
+msgid "Newest members"
+msgstr ""
+
+msgid "Next Lesson"
+msgstr ""
+
+msgid "No account?"
+msgstr ""
+
+msgid "No activity has been recorded yet."
+msgstr ""
+
+msgid "No activity recorded."
+msgstr ""
+
+msgid "No announcements available."
+msgstr ""
+
+msgid "No announcements."
+msgstr ""
+
+msgid "No answers recorded."
+msgstr ""
+
+msgid "No assessments yet."
+msgstr ""
+
+msgid "No assignments yet."
+msgstr ""
+
+msgid "No attempts yet."
+msgstr ""
+
+msgid "No attendance records yet."
+msgstr ""
+
+msgid "No certificates yet."
+msgstr ""
+
+msgid "No conversations yet."
+msgstr ""
+
+msgid "No course data yet."
+msgstr ""
+
+msgid "No courses have been created yet."
+msgstr ""
+
+msgid "No courses match your filters."
+msgstr ""
+
+msgid "No lessons have been added yet."
+msgstr ""
+
+msgid "No materials uploaded."
+msgstr ""
+
+msgid "No notifications yet."
+msgstr ""
+
+msgid "No questions yet."
+msgstr ""
+
+msgid "No questions yet. Add the first question."
+msgstr ""
+
+msgid "No students enrolled yet."
+msgstr ""
+
+msgid "No submissions awaiting grading."
+msgstr ""
+
+msgid "No submissions yet."
+msgstr ""
+
+msgid "No upcoming deadlines."
+msgstr ""
+
+msgid "No users have joined yet."
+msgstr ""
+
+msgid "No users match your filters."
+msgstr ""
+
+msgid "No video lessons added yet."
+msgstr ""
+
+msgid "No video lessons found matching the criteria."
+msgstr ""
+
+msgid "No written response."
+msgstr ""
+
+msgid "Nothing available right now."
+msgstr ""
+
+msgid "Notifications"
+msgstr ""
+
+msgid "Open"
+msgstr ""
+
+msgid "Open attempts"
+msgstr ""
+
+msgid "Open on YouTube"
+msgstr ""
+
+msgid "Open on YouTube &nearr;"
+msgstr ""
+
+msgid "Open reports"
+msgstr ""
+
+msgid "Open submitted file"
+msgstr ""
+
+msgid "Option A"
+msgstr ""
+
+msgid "Option B"
+msgstr ""
+
+msgid "Option C"
+msgstr ""
+
+msgid "Option D"
+msgstr ""
+
+msgid "Optional"
+msgstr ""
+
+msgid "Or upload a video file"
+msgstr ""
+
+msgid "Order"
+msgstr ""
+
+msgid "Overview"
+msgstr ""
+
+msgid "Passing score"
+msgstr ""
+
+msgid "Password"
+msgstr ""
+
+msgid "Paste a YouTube video link on the left to immediately preview how your students will see the lesson. If you upload a video file instead, students watch it with the built-in player on the lesson page."
+msgstr ""
+
+msgid "Pending grading"
+msgstr ""
+
+msgid "People"
+msgstr ""
+
+msgid "Platform pulse"
+msgstr ""
+
+msgid "Platform settings"
+msgstr ""
+
+msgid "Player Ready"
+msgstr ""
+
+msgid "Playing"
+msgstr ""
+
+msgid "Points"
+msgstr ""
+
+msgid "Points awarded"
+msgstr ""
+
+msgid "Popular courses"
+msgstr ""
+
+msgid "Present"
+msgstr ""
+
+msgid "Preview"
+msgstr ""
+
+msgid "Previous Lesson"
+msgstr ""
+
+msgid "Profile"
+msgstr ""
+
+msgid "Progress"
+msgstr ""
+
+msgid "Publish"
+msgstr ""
+
+msgid "Publish announcement"
+msgstr ""
+
+msgid "Published"
+msgstr ""
+
+msgid "Published Lessons"
+msgstr ""
+
+msgid "Published Only"
+msgstr ""
+
+msgid "Question"
+msgstr ""
+
+msgid "Questions"
+msgstr ""
+
+msgid "Quiz"
+msgstr ""
+
+msgid "Quiz average"
+msgstr ""
+
+msgid "Quizzes"
+msgstr ""
+
+msgid "Quizzes &amp; exams"
+msgstr ""
+
+msgid "Quizzes &amp; midterm exams"
+msgstr ""
+
+msgid "Quizzes / exams"
+msgstr ""
+
+msgid "Rate"
+msgstr ""
+
+msgid "Recent Video Lessons"
+msgstr ""
+
+msgid "Recent activity"
+msgstr ""
+
+msgid "Recent notifications"
+msgstr ""
+
+msgid "Recent submissions"
+msgstr ""
+
+msgid "Recently joined"
+msgstr ""
+
+msgid "Register"
+msgstr ""
+
+msgid "Register as a student"
+msgstr ""
+
+msgid "Registration is for students. Teachers and administrators are created by an administrator."
+msgstr ""
+
+msgid "Remaining attempts:"
+msgstr ""
+
+msgid "Remarks"
+msgstr ""
+
+msgid "Reports"
+msgstr ""
+
+msgid "Reports &amp; analytics"
+msgstr ""
+
+msgid "Resubmit"
+msgstr ""
+
+msgid "Result"
+msgstr ""
+
+msgid "Role"
+msgstr "តួនាទី"
+
+msgid "SL"
+msgstr "SL"
+
+msgid "Save PDF"
+msgstr "រក្សាទុកជា PDF"
+
+msgid "Save Video Lesson"
+msgstr "រក្សាទុកមេរៀនវីដេអូ"
+
+msgid "Save assignment"
+msgstr "រក្សាទុកកិច្ចការ"
+
+msgid "Save changes"
+msgstr "រក្សាទុកការផ្លាស់ប្តូរ"
+
+msgid "Save grade"
+msgstr "រក្សាទុកពិន្ទុ"
+
+msgid "Save grades"
+msgstr "រក្សាទុកពិន្ទុ"
+
+msgid "Save question"
+msgstr "រក្សាទុកសំណួរ"
+
+msgid "Save settings"
+msgstr "រក្សាទុកការកំណត់"
+
+msgid "Saving a Gemini token requires the"
+msgstr "ការរក្សាទុកថូខិន Gemini តម្រូវឱ្យមាន"
+
+msgid "Score"
+msgstr "ពិន្ទុ"
+
+msgid "Score:"
+msgstr "ពិន្ទុ៖"
+
+msgid "Send"
+msgstr "ផ្ញើ"
+
+msgid "Server"
+msgstr "ម៉ាស៊ីនបម្រើ"
+
+msgid "Sessions"
+msgstr "សម័យ"
+
+msgid "Settings"
+msgstr "ការកំណត់"
+
+msgid "Shortcuts"
+msgstr "ផ្លូវកាត់"
+
+msgid "Sign in"
+msgstr "ចូល"
+
+msgid "Sign out"
+msgstr "ចាកចេញ"
+
+msgid "Site administration"
+msgstr "ការគ្រប់គ្រងគេហទំព័រ"
+
+msgid "Smart Learning"
+msgstr "ការរៀនវៃឆ្លាត"
+
+msgid "Start examination"
+msgstr "ចាប់ផ្តើមការប្រឡង"
+
+msgid "Start quiz"
+msgstr "ចាប់ផ្តើមការធ្វើតេស្ត"
+
+msgid "Status"
+msgstr "ស្ថានភាព"
+
+msgid "Status:"
+msgstr ""
+
+msgid "Student"
+msgstr ""
+
+msgid "Student information"
+msgstr ""
+
+msgid "Student response"
+msgstr ""
+
+msgid "Students"
+msgstr ""
+
+msgid "Submissions"
+msgstr ""
+
+msgid "Submit"
+msgstr ""
+
+msgid "Submit assignment"
+msgstr ""
+
+msgid "Submit examination"
+msgstr ""
+
+msgid "Submit quiz"
+msgstr ""
+
+msgid "Submitted"
+msgstr ""
+
+msgid "Supported formats:"
+msgstr ""
+
+msgid "Teacher"
+msgstr ""
+
+msgid "Teacher dashboard"
+msgstr ""
+
+msgid "Teachers"
+msgstr ""
+
+msgid "The AI assistant is currently disabled by an administrator."
+msgstr ""
+
+msgid "The assistant is not configured. Ask an administrator to add a Gemini API token in Platform settings."
+msgstr ""
+
+msgid "This action cannot be undone."
+msgstr ""
+
+msgid "This controls student downloads of uploaded video files. Teachers can also enable or disable downloads for each uploaded lesson. YouTube videos are not downloadable through this platform."
+msgstr ""
+
+msgid "Time left"
+msgstr ""
+
+msgid "Time limit"
+msgstr ""
+
+msgid "Tools &amp; results"
+msgstr ""
+
+msgid "Total Video Lessons"
+msgstr ""
+
+msgid "Total Watch Time"
+msgstr ""
+
+msgid "Total points"
+msgstr ""
+
+msgid "Total users"
+msgstr ""
+
+msgid "Type"
+msgstr ""
+
+msgid "Upcoming deadlines"
+msgstr ""
+
+msgid "Upload"
+msgstr ""
+
+msgid "Upload New"
+msgstr ""
+
+msgid "Upload learning material"
+msgstr ""
+
+msgid "Upload material"
+msgstr ""
+
+msgid "Use your email address and password."
+msgstr ""
+
+msgid "User"
+msgstr ""
+
+msgid "User management"
+msgstr ""
+
+msgid "Users"
+msgstr ""
+
+msgid "Valid certificate."
+msgstr ""
+
+msgid "Valid credentials on record"
+msgstr ""
+
+msgid "Verification code"
+msgstr ""
+
+msgid "Verify"
+msgstr ""
+
+msgid "Verify a certificate"
+msgstr ""
+
+msgid "Video Lesson Details"
+msgstr ""
+
+msgid "Video Lessons"
+msgstr ""
+
+msgid "Video Lessons List"
+msgstr ""
+
+msgid "Video downloads"
+msgstr ""
+
+msgid "View"
+msgstr ""
+
+msgid "View &amp; enroll"
+msgstr ""
+
+msgid "View all"
+msgstr ""
+
+msgid "View certificate"
+msgstr ""
+
+msgid "View reports"
+msgstr ""
+
+msgid "Visible to enrolled students"
+msgstr ""
+
+msgid "Watch Video"
+msgstr ""
+
+msgid "Watch on YouTube &nearr;"
+msgstr ""
+
+msgid "Watching via YouTube Embedded Player"
+msgstr ""
+
+msgid "Welcome,"
+msgstr ""
+
+msgid "When"
+msgstr ""
+
+msgid "Yes, delete"
+msgstr ""
+
+msgid "You are all caught up."
+msgstr ""
+
+msgid "You have not enrolled in a course yet."
+msgstr ""
+
+msgid "You have not enrolled in any courses."
+msgstr ""
+
+msgid "YouTube Video Lessons"
+msgstr ""
+
+msgid "YouTube Video Preview"
+msgstr ""
+
+msgid "Your answers are submitted together when you finish."
+msgstr ""
+
+msgid "Your attempts"
+msgstr ""
+
+msgid "Your submission"
+msgstr ""
+
+msgid "completed"
+msgstr "បានបញ្ចប់"
+
+msgid "cryptography"
+msgstr "គ្រីបតូក្រាហ្វី (Cryptography)"
+
+msgid "draft"
+msgstr "ព្រាង"
+
+msgid "has successfully completed"
+msgstr "បានបញ្ចប់ដោយជោគជ័យ"
+
+msgid "https://www.youtube.com/embed/VIDEO_ID"
+msgstr "https://www.youtube.com/embed/VIDEO_ID"
+
+msgid "https://www.youtube.com/shorts/VIDEO_ID"
+msgstr "https://www.youtube.com/shorts/VIDEO_ID"
+
+msgid "https://www.youtube.com/watch?v=VIDEO_ID"
+msgstr "https://www.youtube.com/watch?v=VIDEO_ID"
+
+msgid "https://youtu.be/VIDEO_ID"
+msgstr "https://youtu.be/VIDEO_ID"
+
+msgid "members"
+msgstr "សមាជិក"
+
+msgid "min"
+msgstr "នាទី"
+
+msgid "package. Install the project requirements on the server. The switches can still be saved."
+msgstr ""
+
+msgid "people"
+msgstr ""
+
+msgid "verified"
+msgstr ""

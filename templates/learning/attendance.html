@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+{% block page_title %}{{ page_title }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1 fw-bold">{{ page_title }}</h1>
+        <p class="text-muted mb-0">
+            {% if student_view %}Your attendance across all enrolled courses.{% else %}Attendance records for your courses.{% endif %}
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-sm btn-outline-primary" href="{% url 'learning:attendance_export_pdf' %}">
+            <i class="bi bi-file-earmark-pdf me-1"></i>{% if scope == 'admin' %}Export all PDF{% else %}Export PDF{% endif %}
+        </a>
+        <a class="btn btn-sm btn-outline-secondary" href="{% url 'dashboard' %}"><i class="bi bi-speedometer2 me-1"></i>{% translate "Dashboard" %}</a>
+    </div>
+</div>
+
+<div class="row row-cols-2 row-cols-lg-5 g-3 mb-4">
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">{% translate "Attendance rate" %}</div>
+            <div class="display-6 fw-semibold {% if attendance_rate is not None and attendance_rate < 75 %}text-danger{% else %}text-success{% endif %}">
+                {% if attendance_rate is not None %}{{ attendance_rate|floatformat:1 }}%{% else %}—{% endif %}
+            </div>
+            <div class="small text-muted">{{ total_sessions }} session{{ total_sessions|pluralize }}</div>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">{% translate "Present" %}</div>
+            <div class="display-6 fw-semibold text-success">{{ totals.present }}</div>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">{% translate "Late" %}</div>
+            <div class="display-6 fw-semibold text-warning">{{ totals.late }}</div>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">{% translate "Absent" %}</div>
+            <div class="display-6 fw-semibold text-danger">{{ totals.absent }}</div>
+        </div></div>
+    </div>
+    <div class="col">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-body">
+            <div class="text-muted small">{% translate "Excused" %}</div>
+            <div class="display-6 fw-semibold text-info">{{ totals.excused }}</div>
+        </div></div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-header bg-white fw-semibold">{% translate "Attendance by course" %}</div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>{% translate "Course" %}</th>
+                    <th class="text-center">{% translate "Sessions" %}</th>
+                    <th class="text-center">{% translate "Present" %}</th>
+                    <th class="text-center">{% translate "Late" %}</th>
+                    <th class="text-center">{% translate "Absent" %}</th>
+                    <th class="text-center">{% translate "Excused" %}</th>
+                    <th class="text-end">{% translate "Rate" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for summary in course_summaries %}
+                <tr>
+                    <td>
+                        <a class="fw-semibold text-decoration-none" href="{{ summary.course.get_absolute_url }}">{{ summary.course.code }}</a>
+                        <div class="small text-muted">{{ summary.course.title }}</div>
+                    </td>
+                    <td class="text-center">{{ summary.total }}</td>
+                    <td class="text-center text-success">{{ summary.present }}</td>
+                    <td class="text-center text-warning">{{ summary.late }}</td>
+                    <td class="text-center text-danger">{{ summary.absent }}</td>
+                    <td class="text-center text-info">{{ summary.excused }}</td>
+                    <td class="text-end">
+                        <span class="badge {% if summary.is_low %}text-bg-danger{% else %}text-bg-success{% endif %}">{{ summary.rate|floatformat:1 }}%</span>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center text-muted py-4">{% translate "No attendance records yet." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white fw-semibold">{% translate "Attendance history" %}</div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>{% translate "Date" %}</th>
+                    <th>{% translate "Course" %}</th>
+                    {% if not student_view %}<th>{% translate "Student" %}</th>{% endif %}
+                    <th>{% translate "Status" %}</th>
+                    <th>{% translate "Remarks" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.date|date:"M d, Y" }}</td>
+                    <td>{{ record.course.code }} — {{ record.course.title }}</td>
+                    {% if not student_view %}<td>{{ record.student.full_name }}</td>{% endif %}
+                    <td>
+                        {% if record.status == 'present' %}<span class="badge text-bg-success">{% translate "Present" %}</span>
+                        {% elif record.status == 'late' %}<span class="badge text-bg-warning">{% translate "Late" %}</span>
+                        {% elif record.status == 'absent' %}<span class="badge text-bg-danger">{% translate "Absent" %}</span>
+                        {% else %}<span class="badge text-bg-info">{% translate "Excused" %}</span>{% endif %}
+                    </td>
+                    <td class="small text-muted">{{ record.remarks|default:"—" }}</td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="{% if student_view %}4{% else %}5{% endif %}" class="text-center text-muted py-4">{% translate "No attendance records yet." %}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="card-footer bg-white small text-muted d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <span>{% translate "Attendance rate counts present and late sessions. Records are maintained by your instructors." %}</span>
+        {% if page_obj.paginator.num_pages > 1 %}
+        <nav aria-label="Attendance history pages">
+            <ul class="pagination pagination-sm mb-0">
+                <li class="page-item {% if not page_obj.has_previous %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">&laquo;</a>
+                </li>
+                <li class="page-item disabled"><span class="page-link">{{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span></li>
+                <li class="page-item {% if not page_obj.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,18 @@
+﻿<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">Community forum</h1>
+        <div class="small text-secondary">Connect with companies, universities, schools, alumni, and students.</div>
+    </div>
+    <a class="btn btn-primary" href="{% url 'community:post_create' %}">New discussion</a>
+</div>
+<form class="mb-3" method="get"><input type="hidden" name="category" value="{{ category_slug }}"><input class="form-control" name="q" value="{{ query }}" placeholder="Search discussions"></form>
+<div class="mb-3 d-flex flex-wrap gap-2">
+    <a class="btn btn-sm {% if not category_slug %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'community:forum_list' %}">All discussions</a>
+    {% for category in categories %}
+    <a class="btn btn-sm {% if category.slug == category_slug %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'community:forum_list' %}?category={{ category.slug }}" title="{{ category.description }}">{{ category.name }} ({{ category.post_count }})</a>
+    {% endfor %}
+</div>
+<div class="card"><div class="list-group list-group-flush">{% for post in posts %}<a class="list-group-item list-group-item-action" href="{% url 'community:post_detail' pk=post.pk %}">
+    <div class="d-flex flex-wrap justify-content-between gap-2"><strong>{{ post.title }}</strong><span class="badge text-bg-light">{{ post.category.name|default:"General" }}</span></div>
+    <div class="small text-secondary">{{ post.author.full_name }} &middot; {{ post.author.get_role_display }} &middot; {{ post.created_at|date:"Y-m-d" }} &middot; {{ post.comment_count }} comments</div>
+</a>{% empty %}<div class="p-3 text-secondary">No discussions yet — start the conversation.</div>{% endfor %}</div></div>

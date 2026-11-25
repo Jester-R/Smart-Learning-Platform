@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block title %}Live Portal | Smart Learning Platform{% endblock %}
+{% block content %}
+<section class="card border-0 shadow-sm mb-4 text-white" style="background: linear-gradient(135deg, #7C3AED, #A78BFA);">
+    <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3 p-4">
+        <div>
+            <h1 class="h4 mb-1 fw-bold"><i data-lucide="radio" class="me-2"></i>{% translate "Live Portal" %}</h1>
+            <p class="mb-0 opacity-75">{% translate "Join live classes, watch replays, and follow your course schedule in one place." %}</p>
+        </div>
+        {% if can_manage %}<a class="btn btn-light btn-sm" href="{% url 'live:create' %}"><i data-lucide="plus"></i> {% translate "Schedule live session" %}</a>{% endif %}
+    </div>
+</section>
+
+<div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Live now" %}</div><div class="display-6 fw-semibold">{{ live_count }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Scheduled" %}</div><div class="display-6 fw-semibold">{{ scheduled_count }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Completed" %}</div><div class="display-6 fw-semibold">{{ completed_count }}</div></div></div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-header bg-white fw-semibold"><i data-lucide="radio" class="me-2"></i>{% translate "Live right now" %}</div>
+            <div class="list-group list-group-flush">
+            {% for session in live_now %}
+                <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
+                        <div class="fw-semibold">{{ session.title }}</div>
+                        <div class="small text-secondary">{{ session.course.code }} &middot; {{ session.teacher.full_name }} &middot; {{ session.ends_at|date:"H:i" }}</div>
+                    </div>
+                    <a class="btn btn-sm btn-primary" href="{{ session.get_absolute_url }}"><i data-lucide="play"></i> {% translate "Join live" %}</a>
+                </div>
+            {% empty %}
+                <div class="list-group-item text-center text-secondary py-4">{% translate "No live sessions right now. Check the upcoming schedule below." %}</div>
+            {% endfor %}
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold"><i data-lucide="calendar-clock" class="me-2"></i>{% translate "Upcoming sessions" %}</div>
+            <div class="list-group list-group-flush">
+            {% for session in upcoming_sessions %}
+                <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3">
+                    <div>
+                        <div class="fw-semibold">{{ session.title }}</div>
+                        <div class="small text-secondary">{{ session.course.code }} &middot; {{ session.starts_at|date:"M d, Y H:i" }} &middot; {{ session.teacher.full_name }}</div>
+                    </div>
+                    <a class="btn btn-sm btn-outline-primary" href="{{ session.get_absolute_url }}">{% translate "Details" %}</a>
+                </div>
+            {% empty %}
+                <div class="list-group-item text-center text-secondary py-4">{% translate "No upcoming live sessions." %}</div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-header bg-white fw-semibold"><i data-lucide="history" class="me-2"></i>{% translate "Recent sessions" %}</div>
+            <div class="list-group list-group-flush">
+            {% for session in recent_sessions %}
+                <div class="list-group-item"><div class="fw-semibold">{{ session.title }}</div><div class="small text-secondary">{{ session.course.code }} &middot; {{ session.starts_at|date:"M d, Y" }}</div></div>
+            {% empty %}
+                <div class="list-group-item text-secondary">{% translate "No recent sessions yet." %}</div>
+            {% endfor %}
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">{% translate "How it works" %}</div>
+            <div class="card-body small text-secondary">
+                <p class="mb-2">{% translate "Teachers schedule a YouTube live session for a course. Students enrolled in that course can join from here." %}</p>
+                <p class="mb-0">{% translate "After the session ends, the same page keeps the link available as a replay." %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

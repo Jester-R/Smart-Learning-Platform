@@ -1,0 +1,11 @@
+﻿<div class="card"><div class="card-body">
+    <div class="d-flex flex-wrap justify-content-between gap-2">
+        <div><h1 class="h5 mb-1">{{ job.title }}</h1><div class="text-secondary">{{ job.company.company_name }}</div></div>
+        {% if not has_applied %}<a class="btn btn-primary" href="{% url 'careers:job_apply' pk=job.pk %}">Apply now</a>{% else %}<span class="badge text-bg-success">Applied</span>{% endif %}
+    </div>
+    <hr>
+    <p>{{ job.description }}</p>
+    {% if job.responsibilities %}<h2 class="h6">Responsibilities</h2><p>{{ job.responsibilities }}</p>{% endif %}
+    {% if job.requirements %}<h2 class="h6">Requirements</h2><p>{{ job.requirements }}</p>{% endif %}
+    <p class="small text-secondary">{{ job.get_job_type_display }}{% if job.location %} &middot; {{ job.location }}{% endif %}</p>
+</div></div>

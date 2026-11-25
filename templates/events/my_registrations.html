@@ -1,0 +1,8 @@
+﻿{% extends "base.html" %}
+{% block page_title %}My registrations{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">{% translate "My event registrations" %}</h1>
+<div class="card"><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Event</th><th>When</th><th>Status</th></tr></thead><tbody>
+{% for item in registrations %}<tr><td>{{ item.event.title }}</td><td>{{ item.event.starts_at }}</td><td>{{ item.get_status_display }}</td></tr>{% empty %}<tr><td colspan="3" class="text-center py-4">No registrations yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block page_title %}Interview chat{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">{% translate "Interview chat" %}</h1>
+        <div class="small text-secondary">{{ application.job.title }} &middot; {{ application.job.company.company_name }} &middot; {{ application.get_status_display }}</div>
+    </div>
+    <div class="d-flex gap-2">
+        {% if application.cv_document %}<a class="btn btn-sm btn-outline-secondary" href="{{ application.cv_document.file.url }}" target="_blank" rel="noopener"><i class="bi bi-file-earmark-person me-1"></i>View CV</a>{% endif %}
+        {% if is_hr %}<a class="btn btn-sm btn-outline-primary" href="{% url 'careers:all_applications' %}">All applications</a>{% else %}<a class="btn btn-sm btn-outline-primary" href="{% url 'careers:my_applications' %}">My applications</a>{% endif %}
+    </div>
+</div>
+{% if application.cv_document %}
+<div class="card mb-3">
+    <div class="card-body d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+            <span class="d-inline-grid place-items-center rounded-3" style="width: 44px; height: 44px; background: #EDE9FE; color: #7C3AED;"><i class="bi bi-file-earmark-person fs-5"></i></span>
+            <div>
+                <div class="fw-semibold">{% translate "Candidate CV" %}</div>
+                <div class="small text-secondary">{{ application.applicant.full_name }} &middot; {{ application.applicant.email }} &middot; {{ application.cv_document.title }} &middot; {{ application.cv_document.created_at|date:"M d, Y" }}</div>
+            </div>
+        </div>
+        <a class="btn btn-sm btn-outline-primary" href="{{ application.cv_document.file.url }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>{% translate "Open CV" %}</a>
+    </div>
+</div>
+{% endif %}
+<div class="card mb-3"><div class="card-body" style="max-height: 460px; overflow-y: auto;">
+    {% for message in thread %}
+    <div class="d-flex mb-3 {% if message.sender_id == current_user_id %}justify-content-end{% endif %}">
+        <div class="p-3 rounded-3 {% if message.sender_id == current_user_id %}bg-primary text-white{% else %}bg-light{% endif %}" style="max-width: 75%;">
+            <div class="small fw-semibold mb-1">
+                {% if is_hr %}
+                    {% if message.sender_id == current_user_id %}You{% else %}{{ application.applicant.full_name }}{% endif %}
+                {% else %}
+                    {% if message.sender_id == current_user_id %}You{% else %}{{ application.job.company.company_name }} HR{% endif %}
+                {% endif %}
+            </div>
+            <div>{{ message.body|linebreaksbr }}</div>
+            <div class="small mt-1 {% if message.sender_id == current_user_id %}text-white-50{% else %}text-secondary{% endif %}">{{ message.created_at|date:"M d, Y H:i" }}</div>
+        </div>
+    </div>
+    {% empty %}<div class="text-center text-secondary py-4">No messages yet. Start the conversation about the interview.</div>{% endfor %}
+</div></div>
+<div class="card"><div class="card-body">
+    <form method="post" novalidate>
+        {% csrf_token %}
+        <label class="form-label" for="{{ form.body.id_for_label }}">Message</label>
+        {{ form.body }}
+        {% for error in form.body.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        <button class="btn btn-primary mt-2" type="submit">Send message</button>
+    </form>
+</div></div>
+{% endblock %}

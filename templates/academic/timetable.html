@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block page_title %}Class timetable{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">{% translate "Class timetable" %}</h1>
+        <p class="text-secondary mb-0">{{ total_sessions }} scheduled class sessions</p>
+    </div>
+    {% if can_manage %}<a class="btn btn-primary" href="{% url 'academic:schedule_create' %}"><i class="bi bi-plus-lg"></i> Add schedule</a>{% endif %}
+</div>
+<div class="row g-3">
+    {% for day in days %}
+    <div class="col-xl-4 col-lg-6">
+        <div class="card h-100">
+            <div class="card-header fw-semibold">{{ day.label }}</div>
+            <div class="card-body p-0">
+                {% for item in day.items %}
+                <div class="border-bottom p-3">
+                    <div class="d-flex justify-content-between gap-2">
+                        <strong>{{ item.course.code }}</strong>
+                        <span class="text-secondary small">{{ item.start_time|time:"H:i" }} - {{ item.end_time|time:"H:i" }}</span>
+                    </div>
+                    <div class="small mt-1">{{ item.course.title }}</div>
+                    <div class="text-secondary small mt-1">
+                        {% if item.room %}<i class="bi bi-geo-alt"></i> {{ item.room }}{% endif %}
+                        {% if item.lecturer %}&middot; {{ item.lecturer.full_name }}{% endif %}
+                    </div>
+                    {% if item.notes %}<div class="small mt-2">{{ item.notes }}</div>{% endif %}
+                </div>
+                {% empty %}
+                <div class="p-3 text-secondary small">No classes scheduled.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

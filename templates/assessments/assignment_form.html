@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div><h1 class="h4 mb-1">{{ title }}</h1><p class="text-muted mb-0">{{ course.code }} — {{ course.title }}</p></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{{ course.get_absolute_url }}">{% translate "Cancel" %}</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+<form method="post" enctype="multipart/form-data" novalidate>
+    {% csrf_token %}
+    <div class="row g-3">
+        {% for field in form %}
+        <div class="col-md-{% if field.name == 'description' or field.name == 'instructions' or field.name == 'attachment' %}12{% else %}6{% endif %}">
+            <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+            {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+        </div>
+        {% endfor %}
+    </div>
+    <button class="btn btn-primary mt-4" type="submit">{% translate "Save assignment" %}</button>
+</form>
+</div></div>
+{% endblock %}

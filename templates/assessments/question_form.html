@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block page_title %}{{ title }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div><h1 class="h4 mb-1">{{ title }}</h1><p class="text-muted mb-0">{{ course.code }}</p></div>
+    <a class="btn btn-sm btn-outline-secondary" href="{% if quiz %}{% url 'assessments:quiz_questions' quiz.pk %}{% else %}{% url 'assessments:exam_questions' exam.pk %}{% endif %}">{% translate "Cancel" %}</a>
+</div>
+<div class="card shadow-sm"><div class="card-body">
+<form method="post" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+    <div class="row g-3">
+        <div class="col-md-3"><label class="form-label">{% translate "Type" %}</label>{{ form.question_type }}{% for e in form.question_type.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-2"><label class="form-label">{% translate "Points" %}</label>{{ form.points }}{% for e in form.points.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-2"><label class="form-label">{% translate "Order" %}</label>{{ form.order }}{% for e in form.order.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-12"><label class="form-label">{% translate "Question" %}</label>{{ form.text }}{% for e in form.text.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-6"><label class="form-label">{% translate "Option A" %}</label>{{ form.option_a }}{% for e in form.option_a.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-6"><label class="form-label">{% translate "Option B" %}</label>{{ form.option_b }}{% for e in form.option_b.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-6"><label class="form-label">{% translate "Option C" %}</label>{{ form.option_c }}{% for e in form.option_c.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-6"><label class="form-label">{% translate "Option D" %}</label>{{ form.option_d }}{% for e in form.option_d.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-4"><label class="form-label">{% translate "Correct option" %}</label>{{ form.correct_option }}<div class="form-text">{% translate "A=True, B=False for true/false questions." %}</div>{% for e in form.correct_option.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-md-8"><label class="form-label">{% translate "Expected short answer" %}</label>{{ form.correct_answer }}{% for e in form.correct_answer.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+        <div class="col-12"><label class="form-label">{% translate "Explanation (optional)" %}</label>{{ form.explanation }}</div>
+    </div>
+    <button class="btn btn-primary mt-4" type="submit">{% translate "Save question" %}</button>
+</form>
+</div></div>
+{% endblock %}

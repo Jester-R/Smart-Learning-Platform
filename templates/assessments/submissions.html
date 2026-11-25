@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block page_title %}Submissions · {{ assignment.title }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h1 class="h4 mb-1">{{ assignment.title }}</h1><p class="text-muted mb-0">{{ course.code }} · {{ submissions|length }} submission(s)</p></div>
+    <div class="d-flex gap-2"><a class="btn btn-sm btn-outline-secondary" href="{% url 'assessments:assignment' course.slug assignment.pk %}">{% translate "Assignment" %}</a><a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:assignment_edit' course.slug assignment.pk %}">{% translate "Edit" %}</a></div>
+</div>
+<div class="card shadow-sm"><div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+    <thead><tr><th>{% translate "Student" %}</th><th>{% translate "Submitted" %}</th><th>{% translate "Late" %}</th><th>{% translate "Status" %}</th><th>{% translate "Score" %}</th><th></th></tr></thead>
+    <tbody>
+        {% for submission in submissions %}
+        <tr><td>{{ submission.student.full_name }}</td><td>{{ submission.submitted_at|date:"M d, Y H:i" }}</td><td>{{ submission.is_late|yesno:"Yes,No" }}</td><td><span class="badge text-bg-light">{{ submission.get_status_display }}</span></td><td>{% if submission.score is not None %}{{ submission.score }} / {{ assignment.max_points }}{% else %}—{% endif %}</td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:submission_grade' submission.pk %}">{% translate "Open" %}</a></td></tr>
+        {% empty %}<tr><td colspan="6" class="text-center text-muted py-4">{% translate "No submissions yet." %}</td></tr>{% endfor %}
+    </tbody>
+</table>
+</div></div>
+{% endblock %}

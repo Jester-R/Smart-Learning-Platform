@@ -1,0 +1,31 @@
+﻿<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">Jobs and internships</h1>
+        <div class="small text-secondary">{{ total_positions }} open positions &middot; {{ internship_count }} internships</div>
+    </div>
+    <a class="btn btn-outline-primary" href="{% url 'careers:my_applications' %}">My applications</a>
+</div>
+<form class="row g-2 mb-3" method="get">
+    <div class="col-md-6"><input class="form-control" name="q" value="{{ query }}" placeholder="Search positions"></div>
+    <div class="col-md-4"><select class="form-select" name="job_type"><option value="">All positions</option>{% for value, label in job_types %}<option value="{{ value }}" {% if value == job_type %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+    <div class="col-md-2"><button class="btn btn-primary w-100" type="submit">Go</button></div>
+</form>
+<div class="mb-3 d-flex flex-wrap gap-2">
+    <a class="btn btn-sm {% if not job_type %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'careers:job_list' %}">All positions ({{ total_positions }})</a>
+    <a class="btn btn-sm {% if job_type == 'internship' %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'careers:job_list' %}?job_type=internship">Internships ({{ internship_count }})</a>
+    <a class="btn btn-sm {% if job_type and job_type != 'internship' %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="{% url 'careers:job_list' %}?job_type=full_time">Full-time</a>
+</div>
+<div class="row g-3">
+    {% for job in jobs %}
+    <div class="col-lg-6"><div class="card h-100"><div class="card-body">
+        <div class="d-flex justify-content-between gap-2"><h2 class="h6 mb-1">{{ job.title }}</h2><span class="badge text-bg-light">{{ job.get_job_type_display }}</span></div>
+        <div class="small text-secondary mb-2">{{ job.company.company_name }}{% if job.location %} &middot; {{ job.location }}{% endif %}</div>
+        <p class="small">{{ job.description|truncatechars:160 }}</p>
+        <div class="d-flex flex-wrap gap-3 small text-secondary mb-3">
+            {% if job.salary_min or job.salary_max %}<span><i class="bi bi-cash-coin"></i> ${{ job.salary_min|default_if_none:"0" }} &ndash; ${{ job.salary_max|default_if_none:"0" }}/mo</span>{% endif %}
+            {% if job.application_deadline %}<span><i class="bi bi-clock"></i> Apply by {{ job.application_deadline|date:"M d, Y" }}</span>{% endif %}
+        </div>
+        <a class="btn btn-sm btn-primary" href="{% url 'careers:job_detail' pk=job.pk %}">View details</a>
+    </div></div></div>
+    {% empty %}<div class="col-12"><div class="alert alert-light">No positions match your search.</div></div>{% endfor %}
+</div>

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Smart Learning Platform{% endblock %}
+{% block public_content %}
+<section class="hero mb-4">
+    <span class="hero__badge"><i class="bi bi-stars"></i>{% translate "Learning management system" %}</span>
+    <h1 class="hero__title">{% translate "Learn, teach, and" %} <span>{% translate "grow in one place." %}</span></h1>
+    <p class="hero__text">
+        {% translate "Courses, video lessons, materials, assignments, quizzes, midterm exams, progress tracking, reports, and certificates for administrators, teachers, and students." %}
+    </p>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary btn-lg px-4" href="{% url 'accounts:register' %}">
+            <i class="bi bi-person-plus me-2"></i>{% translate "Create student account" %}
+        </a>
+        <a class="btn btn-outline-secondary btn-lg px-4" href="{% url 'accounts:login' %}">
+            <i class="bi bi-box-arrow-in-right me-2"></i>{% translate "Sign in" %}
+        </a>
+    </div>
+    <div class="hero__stats">
+        <div class="hero__stat">
+            <strong>{{ stats.courses }}</strong>
+            <span>{% translate "Published courses" %}</span>
+        </div>
+        <div class="hero__stat">
+            <strong>{{ stats.students }}</strong>
+            <span>{% translate "Students" %}</span>
+        </div>
+        <div class="hero__stat">
+            <strong>{{ stats.teachers }}</strong>
+            <span>{% translate "Teachers" %}</span>
+        </div>
+    </div>
+</section>
+
+<div class="row g-4 align-items-stretch mb-4">
+    <div class="col-lg-8">
+        <div class="row row-cols-1 row-cols-sm-2 g-4 h-100">
+            <div class="col">
+                <article class="feature-card">
+                    <span class="feature-card__icon"><i class="bi bi-youtube"></i></span>
+                    <h3>{% translate "Video Lessons" %}</h3>
+                    <p>{% translate "Watch structured lessons with chapters, playlists, and resume where you left off." %}</p>
+                </article>
+            </div>
+            <div class="col">
+                <article class="feature-card">
+                    <span class="feature-card__icon feature-card__icon--violet"><i class="bi bi-robot"></i></span>
+                    <h3>{% translate "AI Assistant" %}</h3>
+                    <p>{% translate "Get instant answers about courses and content, grounded in your platform catalog." %}</p>
+                </article>
+            </div>
+            <div class="col">
+                <article class="feature-card">
+                    <span class="feature-card__icon feature-card__icon--green"><i class="bi bi-award"></i></span>
+                    <h3>{% translate "Certificates" %}</h3>
+                    <p>{% translate "Earn verifiable certificates as you complete courses and assessments." %}</p>
+                </article>
+            </div>
+            <div class="col">
+                <article class="feature-card">
+                    <span class="feature-card__icon feature-card__icon--amber"><i class="bi bi-bar-chart"></i></span>
+                    <h3>{% translate "Reports" %}</h3>
+                    <p>{% translate "Track progress, attendance, grades, and performance with clear dashboards." %}</p>
+                </article>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card status-card">
+            <div class="card-header d-flex align-items-center gap-2">
+                <i class="bi bi-hdd-network text-info"></i>
+                <span>{% translate "Environment status" %}</span>
+            </div>
+            <div class="card-body">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0"><span class="text-secondary">{% translate "Database engine" %}</span><span class="badge text-bg-secondary">{{ db_status.engine }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0"><span class="text-secondary">{% translate "Database" %}</span><code>{{ db_status.name }}</code></li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0"><span class="text-secondary">{% translate "Connection" %}</span>
+                        {% if db_status.connected %}<span class="badge text-bg-success">{% translate "Connected" %}</span>{% else %}<span class="badge text-bg-danger">{% translate "Failed" %}</span>{% endif %}
+                    </li>
+                    {% if db_status.version %}<li class="list-group-item d-flex justify-content-between align-items-center px-0"><span class="text-secondary">{% translate "Server" %}</span><code>{{ db_status.version }}</code></li>{% endif %}
+                </ul>
+                {% if db_status.error and debug %}<div class="alert alert-danger mt-3 mb-0 small">{{ db_status.error }}</div>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

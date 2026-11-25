@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block page_title %}Platform settings{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-xl-8">
+        <div class="mb-4">
+            <span class="badge text-bg-primary mb-2"><i class="bi bi-shield-lock me-1"></i>{% translate "Administrator controls" %}</span>
+            <h1 class="h3 fw-bold mb-1">{% translate "Platform settings" %}</h1>
+            <p class="text-muted mb-0">{% translate "Manage the AI assistant and downloads for uploaded lesson videos." %}</p>
+        </div>
+        <form method="post" class="card border-0 shadow-sm">
+            {% csrf_token %}
+            <div class="card-body p-4">
+                {% if not can_encrypt_api_key %}
+                <div class="alert alert-warning"><i class="bi bi-exclamation-triangle me-2"></i>{% translate "Saving a Gemini token requires the" %} <code>{% translate "cryptography" %}</code> {% translate "package. Install the project requirements on the server. The switches can still be saved." %}</div>
+                {% endif %}
+                <section class="mb-4">
+                    <h2 class="h5 fw-semibold"><i class="bi bi-robot text-primary me-2"></i>{% translate "Gemini AI Assistant" %}</h2>
+                    <div class="form-check form-switch mb-3">
+                        {{ form.ai_assistant_enabled }}
+                        <label class="form-check-label fw-semibold" for="{{ form.ai_assistant_enabled.id_for_label }}">{{ form.ai_assistant_enabled.label }}</label>
+                    </div>
+                    <label class="form-label" for="{{ form.gemini_api_key.id_for_label }}">{{ form.gemini_api_key.label }}</label>
+                    {{ form.gemini_api_key }}
+                    <div class="form-text">{{ form.gemini_api_key.help_text }} {% if has_saved_api_key %}A token is saved.{% elif has_environment_api_key %}A server environment token is active.{% else %}No token is configured yet.{% endif %}</div>
+                    {% for error in form.gemini_api_key.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    {% for error in form.ai_assistant_enabled.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                    <div class="form-check mt-3">
+                        {{ form.clear_gemini_api_key }}
+                        <label class="form-check-label" for="{{ form.clear_gemini_api_key.id_for_label }}">{{ form.clear_gemini_api_key.label }}</label>
+                    </div>
+                </section>
+                <hr>
+                <section class="mt-4">
+                    <h2 class="h5 fw-semibold"><i class="bi bi-download text-primary me-2"></i>{% translate "Video downloads" %}</h2>
+                    <div class="form-check form-switch mb-2">
+                        {{ form.video_downloads_enabled }}
+                        <label class="form-check-label fw-semibold" for="{{ form.video_downloads_enabled.id_for_label }}">{{ form.video_downloads_enabled.label }}</label>
+                    </div>
+                    <p class="form-text mb-0">{% translate "This controls student downloads of uploaded video files. Teachers can also enable or disable downloads for each uploaded lesson. YouTube videos are not downloadable through this platform." %}</p>
+                    {% for error in form.video_downloads_enabled.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+                </section>
+            </div>
+            <div class="card-footer bg-white d-flex justify-content-between align-items-center p-3">
+                <span class="small text-muted">{% translate "API tokens are encrypted before storage and never shown after saving." %}</span>
+                <button class="btn btn-primary" type="submit"><i class="bi bi-check2 me-1"></i>{% translate "Save settings" %}</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

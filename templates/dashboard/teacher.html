@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block page_title %}Teacher dashboard{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1 fw-bold">{% translate "Teacher dashboard" %}</h1>
+        <p class="text-muted mb-0">{% translate "Manage your courses, YouTube video lessons, and student grading." %}</p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary btn-sm" href="{% url 'learning:teacher_video_create' %}">
+            <i class="bi bi-youtube me-1"></i> {% translate "Add Video Lesson" %}
+        </a>
+        <a class="btn btn-outline-secondary btn-sm" href="{% url 'learning:teacher_videos' %}">
+            <i class="bi bi-collection-play me-1"></i> {% translate "Manage Videos" %}
+        </a>
+        <a class="btn btn-outline-primary btn-sm" href="{% url 'courses:create' %}">{% translate "New Course" %}</a>
+    </div>
+</div>
+
+<div class="design-section-grid" aria-label="{% translate 'Teacher workspace sections' %}">
+    <a class="design-section-card flex items-center gap-3" href="{% url 'courses:list' %}"><span class="design-section-card__icon"><i data-lucide="presentation"></i></span><span><strong>{% translate "My Classes" %}</strong><small>{{ course_count }} {% translate "courses" %}</small></span></a>
+    <a class="design-section-card flex items-center gap-3" href="{% url 'courses:list' %}"><span class="design-section-card__icon"><i data-lucide="users"></i></span><span><strong>{% translate "Student Management" %}</strong><small>{{ student_count }} {% translate "students" %}</small></span></a>
+    <a class="design-section-card flex items-center gap-3" href="{% url 'learning:teacher_video_create' %}"><span class="design-section-card__icon"><i data-lucide="video"></i></span><span><strong>{% translate "Create Lessons" %}</strong><small>{% translate "Video and written lessons" %}</small></span></a>
+    <a class="design-section-card flex items-center gap-3" href="{% url 'live:portal' %}"><span class="design-section-card__icon"><i data-lucide="radio"></i></span><span><strong>{% translate "Live Portal" %}</strong><small>{% translate "Schedule and host sessions" %}</small></span></a>
+    <a class="design-section-card flex items-center gap-3" href="#grading"><span class="design-section-card__icon"><i data-lucide="clipboard-check"></i></span><span><strong>{% translate "Assignments and Grading" %}</strong><small>{{ pending_count }} {% translate "awaiting review" %}</small></span></a>
+    <a class="design-section-card flex items-center gap-3" href="{% url 'learning:attendance_record' %}"><span class="design-section-card__icon"><i data-lucide="calendar-check"></i></span><span><strong>{% translate "Attendance" %}</strong><small>{% translate "Record and review" %}</small></span></a>
+    <a class="design-section-card flex items-center gap-3" href="{% url 'analytics:reports' %}"><span class="design-section-card__icon"><i data-lucide="bar-chart"></i></span><span><strong>{% translate "Learning Reports" %}</strong><small>{% translate "Grades and enrollments" %}</small></span></a>
+</div>
+
+<div class="row row-cols-2 row-cols-lg-5 g-3 mb-4">
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Courses" %}</div><div class="display-6 fw-semibold">{{ course_count }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Video Lessons" %}</div><div class="display-6 fw-semibold text-danger">{{ video_count|default:0 }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Students" %}</div><div class="display-6 fw-semibold">{{ student_count }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Pending grading" %}</div><div class="display-6 fw-semibold">{{ pending_count }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100 border-0 shadow-sm"><div class="card-body"><div class="text-muted small">{% translate "Quizzes / exams" %}</div><div class="display-6 fw-semibold">{{ quiz_count }} / {{ exam_count }}</div></div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+    <!-- Video Lessons Quick Management Table -->
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-youtube text-danger fs-5"></i>
+                    <span class="fw-semibold">{% translate "Recent Video Lessons" %}</span>
+                </div>
+                <div class="d-flex gap-2">
+                    <a class="btn btn-sm btn-primary" href="{% url 'learning:teacher_video_create' %}">
+                        <i class="bi bi-plus-lg me-1"></i> {% translate "Add Video Lesson" %}
+                    </a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'learning:teacher_videos' %}">
+                        View All ({{ video_count|default:0 }})
+                    </a>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th style="width: 100px;">{% translate "Preview" %}</th>
+                            <th>{% translate "Lesson Title" %}</th>
+                            <th>{% translate "Course" %}</th>
+                            <th>{% translate "Duration" %}</th>
+                            <th>{% translate "Status" %}</th>
+                            <th class="text-end">{% translate "Actions" %}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lesson in recent_video_lessons %}
+                        <tr>
+                            <td>
+                                {% if lesson.has_youtube %}
+                                <div class="play-badge-overlay" style="cursor: pointer;"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#videoPreviewModal"
+                                     data-video-id="{{ lesson.youtube_video_id }}"
+                                     data-video-title="{{ lesson.title }}">
+                                    <img src="{{ lesson.youtube_thumbnail_url }}" alt="{{ lesson.title }}" class="video-table-thumb">
+                                    <i class="bi bi-play-circle-fill play-icon"></i>
+                                </div>
+                                {% else %}
+                                <div class="video-table-thumb d-flex align-items-center justify-content-center text-muted">
+                                    <i class="bi bi-film fs-4"></i>
+                                </div>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="fw-semibold text-decoration-none" href="{% url 'learning:lesson' lesson.course.slug lesson.pk %}">
+                                    {{ lesson.title }}
+                                </a>
+                                {% if lesson.chapter %}<div class="small text-muted">{{ lesson.chapter }}</div>{% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ lesson.course.get_absolute_url }}" class="badge text-bg-light border text-decoration-none">
+                                    {{ lesson.course.code }}
+                                </a>
+                            </td>
+                            <td><span class="small text-muted">{{ lesson.duration_display }}</span></td>
+                            <td>
+                                {% if lesson.is_published %}
+                                <span class="badge text-bg-success">{% translate "Published" %}</span>
+                                {% else %}
+                                <span class="badge text-bg-warning">{% translate "Draft" %}</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                <div class="btn-group btn-group-sm">
+                                    {% if lesson.has_youtube %}
+                                    <button type="button" class="btn btn-outline-secondary"
+                                            title="Preview Video"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#videoPreviewModal"
+                                            data-video-id="{{ lesson.youtube_video_id }}"
+                                            data-video-title="{{ lesson.title }}">
+                                        <i class="bi bi-play-fill text-danger"></i>
+                                    </button>
+                                    {% endif %}
+                                    <a class="btn btn-outline-secondary" href="{% url 'learning:lesson' lesson.course.slug lesson.pk %}" title="Open">
+                                        <i class="bi bi-box-arrow-up-right"></i>
+                                    </a>
+                                    <a class="btn btn-outline-primary" href="{% url 'learning:lesson_edit' lesson.course.slug lesson.pk %}" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a class="btn btn-outline-danger" href="{% url 'learning:lesson_delete' lesson.course.slug lesson.pk %}" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-4 text-muted">
+                                <p class="mb-2">{% translate "No video lessons added yet." %}</p>
+                                <a class="btn btn-sm btn-primary" href="{% url 'learning:teacher_video_create' %}">
+                                    <i class="bi bi-plus-lg me-1"></i> {% translate "Add your first YouTube video lesson" %}
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card h-100 border-0 shadow-sm"><div class="card-header bg-white fw-semibold">{% translate "My Classes" %}</div>
+            <div class="list-group list-group-flush">
+                {% for course in courses %}
+                <div class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                    <div>
+                        <a class="fw-semibold text-decoration-none" href="{{ course.get_absolute_url }}">{{ course.code }} — {{ course.title }}</a>
+                        <div class="small text-muted">{{ course.lesson_count }} lessons · {{ course.student_count }} students</div>
+                    </div>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a class="btn btn-sm btn-outline-primary" href="{% url 'learning:lesson_create' course.slug %}">
+                            <i class="bi bi-plus-circle me-1"></i>{% translate "Add Lesson" %}
+                        </a>
+                        <span class="badge {% if course.status == 'published' %}text-bg-success{% elif course.status == 'archived' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">{{ course.get_status_display }}</span>
+                    </div>
+                </div>
+                {% empty %}<div class="list-group-item text-muted">{% translate "Create your first course to get started." %}</div>{% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="card h-100 border-0 shadow-sm" id="grading"><div class="card-header bg-white fw-semibold">{% translate "Assignments and Grading" %}</div>
+            <ul class="list-group list-group-flush">
+                {% for submission in pending_submissions %}
+                <li class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                    <div><div class="fw-semibold">{{ submission.student.full_name }}</div><div class="small text-muted">{{ submission.assignment.title }}</div></div>
+                    <a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:submission_grade' submission.pk %}">{% translate "Grade" %}</a>
+                </li>
+                {% empty %}<li class="list-group-item text-muted">{% translate "No submissions awaiting grading." %}</li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="card border-0 shadow-sm"><div class="card-header bg-white fw-semibold">{% translate "Recent submissions" %}</div>
+            <div class="table-responsive"><table class="table table-hover mb-0">
+                <thead><tr><th>{% translate "Student" %}</th><th>{% translate "Assignment" %}</th><th>{% translate "Status" %}</th><th>{% translate "Submitted" %}</th><th></th></tr></thead>
+                <tbody>
+                    {% for submission in recent_submissions %}
+                    <tr><td>{{ submission.student.full_name }}</td><td>{{ submission.assignment.title }}</td><td><span class="badge text-bg-light">{{ submission.get_status_display }}</span></td><td>{{ submission.submitted_at|date:"M d, Y H:i" }}</td><td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="{% url 'assessments:submission_grade' submission.pk %}">{% translate "Open" %}</a></td></tr>
+                    {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">{% translate "No submissions yet." %}</td></tr>{% endfor %}
+                </tbody>
+            </table></div>
+        </div>
+    </div>
+</div>
+<!-- Video Preview Modal -->
+<div class="modal fade" id="videoPreviewModal" tabindex="-1" aria-labelledby="videoPreviewModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="videoPreviewModalTitle">{% translate "YouTube Video Preview" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-dark">
+                <div class="ratio ratio-16x9">
+                    <iframe id="videoPreviewModalIframe"
+                            src=""
+                            title="YouTube Preview"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <a id="videoPreviewModalWatchLink" href="#" target="_blank" rel="noopener" class="small text-decoration-none">
+                    <i class="bi bi-youtube text-danger me-1"></i> {% translate "Open on YouTube &nearr;" %}
+                </a>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

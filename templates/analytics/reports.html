@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block page_title %}Reports &amp; analytics{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><h1 class="h4 mb-1">{% translate "Reports &amp; analytics" %}</h1><p class="text-muted mb-0">{% translate "Enrollment, grading, and assessment insights." %}</p></div>
+    {% if is_admin_view %}<a class="btn btn-sm btn-outline-secondary" href="{% url 'analytics:activity' %}">{% translate "Activity log" %}</a>{% endif %}
+</div>
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col"><div class="card stat-card h-100"><div class="card-body"><div class="text-muted small">{% translate "Students" %}</div><div class="display-6 fw-semibold">{{ total_students }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100"><div class="card-body"><div class="text-muted small">{% translate "Enrollments" %}</div><div class="display-6 fw-semibold">{{ total_enrollments }}</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100"><div class="card-body"><div class="text-muted small">{% translate "Submissions" %}</div><div class="display-6 fw-semibold">{{ total_submissions }}</div><div class="small text-muted">{{ graded_submissions }} graded</div></div></div></div>
+    <div class="col"><div class="card stat-card h-100"><div class="card-body"><div class="text-muted small">{% translate "Average grade" %}</div><div class="display-6 fw-semibold">{% if average_grade is not None %}{{ average_grade }}%{% else %}—{% endif %}</div></div></div></div>
+</div>
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col"><div class="card h-100"><div class="card-body"><div class="text-muted small">{% translate "Quiz average" %}</div><div class="h4 mb-0">{% if quiz_average is not None %}{{ quiz_average }}%{% else %}—{% endif %}</div></div></div></div>
+    <div class="col"><div class="card h-100"><div class="card-body"><div class="text-muted small">{% translate "Exam average" %}</div><div class="h4 mb-0">{% if exam_average is not None %}{{ exam_average }}%{% else %}—{% endif %}</div></div></div></div>
+    <div class="col"><div class="card h-100"><div class="card-body"><div class="text-muted small">{% translate "Lessons completed" %}</div><div class="h4 mb-0">{{ completed_lessons }}</div></div></div></div>
+    <div class="col"><div class="card h-100"><div class="card-body"><div class="text-muted small">{% translate "Courses" %}</div><div class="h4 mb-0">{{ courses|length }}</div></div></div></div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-7"><div class="card h-100"><div class="card-header bg-white fw-semibold">{% translate "Enrollment by course" %}</div><div class="card-body"><canvas id="enrollmentChart" height="140"></canvas></div></div></div>
+    <div class="col-lg-5"><div class="card h-100"><div class="card-header bg-white fw-semibold">{% translate "Grade distribution" %}</div><div class="card-body"><canvas id="gradeChart" height="160"></canvas></div></div></div>
+    <div class="col-12"><div class="card"><div class="card-header bg-white fw-semibold">{% translate "Course performance" %}</div>
+        <div class="table-responsive"><table class="table table-hover align-middle mb-0">
+            <thead><tr><th>{% translate "Course" %}</th><th>{% translate "Teacher" %}</th><th>{% translate "Students" %}</th><th>{% translate "Lessons" %}</th><th>{% translate "Status" %}</th></tr></thead>
+            <tbody>
+                {% for course in courses %}
+                <tr><td><a class="text-decoration-none" href="{{ course.get_absolute_url }}">{{ course.code }} — {{ course.title }}</a></td><td>{{ course.teacher.full_name }}</td><td>{{ course.enrolled }}</td><td>{{ course.lesson_total }}</td><td><span class="badge text-bg-light">{{ course.get_status_display }}</span></td></tr>
+                {% empty %}<tr><td colspan="5" class="text-center text-muted py-4">{% translate "No course data yet." %}</td></tr>{% endfor %}
+            </tbody>
+        </table></div>
+    </div></div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+const labels = {{ chart_labels|safe }};
+const enrollments = {{ chart_enrollments|safe }};
+const gradeLabels = {{ grade_labels|safe }};
+const gradeValues = {{ grade_values|safe }};
+new Chart(document.getElementById('enrollmentChart'), {
+    type: 'bar',
+    data: { labels: labels, datasets: [{ label: 'Enrolled students', data: enrollments, backgroundColor: '#7C3AED', borderRadius: 6 }] },
+    options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+});
+new Chart(document.getElementById('gradeChart'), {
+    type: 'doughnut',
+    data: { labels: gradeLabels, datasets: [{ data: gradeValues, backgroundColor: ['#7C3AED', '#A78BFA', '#16A34A', '#F59E0B', '#DC2626'], borderColor: '#211B38', borderWidth: 2 }] },
+    options: { responsive: true }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,296 @@
+{% extends "base.html" %}
+{% block page_title %}{{ lesson.title }} — {{ course.code }}{% endblock %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb mb-3">
+        <li class="breadcrumb-item"><a href="{% url 'courses:list' %}" class="text-decoration-none">{% translate "Courses" %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ course.get_absolute_url }}" class="text-decoration-none">{{ course.code
+                }}</a></li>
+        {% if lesson.chapter %}
+        <li class="breadcrumb-item text-muted">{{ lesson.chapter }}</li>
+        {% endif %}
+        <li class="breadcrumb-item active" aria-current="page">Lesson {{ lesson.order }}</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <!-- Main Content & Responsive Video Player -->
+    <div class="col-lg-8">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-3 p-md-4">
+                <!-- Lesson Meta Header -->
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <span class="badge text-bg-primary fs-6">Lesson {{ lesson.order }}</span>
+                        {% if lesson.chapter %}
+                        <span class="badge bg-light text-dark border"><i class="bi bi-bookmark me-1"></i>{{
+                            lesson.chapter }}</span>
+                        {% endif %}
+                        <span class="badge text-bg-secondary"><i class="bi bi-clock me-1"></i>{{ lesson.duration_display
+                            }}</span>
+                        {% if not lesson.is_published %}
+                        <span class="badge text-bg-warning"><i class="bi bi-eye-slash me-1"></i>{% translate "Draft Mode" %}</span>
+                        {% endif %}
+                    </div>
+
+                    {% if is_manager %}
+                    <div class="d-flex gap-2">
+                        <form method="post" action="{% url 'learning:lesson_toggle_publish' course.slug lesson.pk %}"
+                            class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit"
+                                class="btn btn-sm {% if lesson.is_published %}btn-outline-warning{% else %}btn-outline-success{% endif %}">
+                                {% if lesson.is_published %}<i class="bi bi-eye-slash"></i> Unpublish{% else %}<i
+                                    class="bi bi-eye"></i> Publish{% endif %}
+                            </button>
+                        </form>
+                        <a class="btn btn-sm btn-outline-primary"
+                            href="{% url 'learning:lesson_edit' course.slug lesson.pk %}">
+                            <i class="bi bi-pencil me-1"></i>{% translate "Edit" %}
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger"
+                            data-confirm="{% translate 'Delete this lesson?' %}"
+                            href="{% url 'learning:lesson_delete' course.slug lesson.pk %}">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Video Player Container -->
+                {% if lesson.has_youtube %}
+                <div class="video-player-frame ratio ratio-16x9 mb-3">
+                    <iframe src="{{ lesson.youtube_embed_url }}" title="{{ lesson.title }}"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                </div>
+
+                <!-- YouTube Embedding / Fallback Banner -->
+                <div
+                    class="alert alert-light border d-flex flex-wrap justify-content-between align-items-center py-2 px-3 mb-3 small text-muted">
+                    <div class="d-flex align-items-center gap-2">
+                        <i class="bi bi-youtube text-danger fs-5"></i>
+                        <span>{% translate "Watching via YouTube Embedded Player" %}</span>
+                    </div>
+                    <a href="{{ lesson.youtube_watch_url }}" target="_blank" rel="noopener"
+                        class="text-decoration-none">
+                        {% translate "Open on YouTube" %} <i class="bi bi-box-arrow-up-right ms-1"></i>
+                    </a>
+                </div>
+                {% elif lesson.video_file %}
+                <div class="ratio ratio-16x9 mb-3 rounded overflow-hidden bg-black">
+                    <video controls class="w-100 h-100">
+                        <source src="{% url 'learning:video_file' course.slug lesson.pk %}">
+                    </video>
+                </div>
+                {% elif lesson.video_url %}
+                <div class="alert alert-info d-flex justify-content-between align-items-center mb-3">
+                    <span><i class="bi bi-play-circle me-2"></i>{% translate "External video lesson available" %}</span>
+                    <a class="btn btn-sm btn-primary" href="{{ lesson.video_url }}" target="_blank" rel="noopener">{% translate "Watch Video" %}</a>
+                </div>
+                {% endif %}
+
+                <!-- Lesson Title & Description -->
+                <h1 class="h3 fw-bold mb-2">{{ lesson.title }}</h1>
+                {% if lesson.description %}
+                <p class="text-secondary mb-4">{{ lesson.description|linebreaksbr }}</p>
+                {% endif %}
+                {% if lesson.video_file %}
+                {% if is_manager %}
+                    <a class="btn btn-outline-primary btn-sm mb-3" href="{% url 'learning:video_file' course.slug lesson.pk %}?download=1">
+                        <i class="bi bi-download me-1"></i>{% translate "Download video" %}
+                    </a>
+                {% elif video_downloads_enabled and lesson.video_downloadable %}
+                    <a class="btn btn-outline-primary btn-sm mb-3" href="{% url 'learning:video_file' course.slug lesson.pk %}?download=1">
+                        <i class="bi bi-download me-1"></i>{% translate "Download video" %}
+                    </a>
+                {% endif %}
+                {% endif %}
+
+                <!-- Reading Notes / Content -->
+                {% if lesson.content %}
+                <div class="border-top pt-3 mt-3">
+                    <h5 class="fw-semibold mb-2"><i class="bi bi-journal-text me-2"></i>{% translate "Lesson Notes &amp; Resources" %}
+                    </h5>
+                    <div class="lesson-content bg-light p-3 rounded-3">{{ lesson.content|linebreaks }}</div>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Navigation & Completion Action Bar -->
+            <div
+                class="card-footer bg-white border-top p-3 d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <!-- Previous Lesson -->
+                <div>
+                    {% if previous_lesson %}
+                    <a class="btn btn-outline-secondary btn-sm"
+                        href="{% url 'learning:lesson' course.slug previous_lesson.pk %}">
+                        <i class="bi bi-arrow-left me-1"></i> {% translate "Previous Lesson" %}
+                    </a>
+                    {% else %}
+                    <button class="btn btn-outline-secondary btn-sm" disabled>
+                        <i class="bi bi-arrow-left me-1"></i> {% translate "Previous Lesson" %}
+                    </button>
+                    {% endif %}
+                </div>
+
+                <!-- Center: Mark as Completed (for students) -->
+                <div class="d-flex align-items-center">
+                    {% if user.role == 'student' %}
+                    {% if progress and progress.is_completed %}
+                    <span class="badge text-bg-success py-2 px-3 d-inline-flex align-items-center gap-1">
+                        <i class="bi bi-check-circle-fill"></i> {% translate "Completed" %}
+                    </span>
+                    {% else %}
+                    <form id="mark-complete-form" method="post"
+                        action="{% url 'learning:mark_complete' course.slug lesson.pk %}">
+                        {% csrf_token %}
+                        <button class="btn btn-success btn-sm px-3" type="submit">
+                            <i class="bi bi-check2-circle me-1"></i> {% translate "Mark as Completed" %}
+                        </button>
+                    </form>
+                    {% endif %}
+                    {% endif %}
+                </div>
+
+                <!-- Next Lesson -->
+                <div>
+                    {% if next_lesson %}
+                    <a class="btn btn-primary btn-sm" href="{% url 'learning:lesson' course.slug next_lesson.pk %}">
+                        {% translate "Next Lesson" %} <i class="bi bi-arrow-right ms-1"></i>
+                    </a>
+                    {% else %}
+                    <a class="btn btn-outline-success btn-sm" href="{{ course.get_absolute_url }}">
+                        {% translate "Course Overview" %} <i class="bi bi-check2-all ms-1"></i>
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Downloadable Materials Section -->
+        {% if materials %}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center py-3">
+                <span><i class="bi bi-paperclip me-2"></i>Lesson Materials ({{ materials.count }})</span>
+                {% if is_manager %}
+                <a class="btn btn-sm btn-outline-primary" href="{% url 'learning:material_create' course.slug %}">{% translate "Upload New" %}</a>
+                {% endif %}
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for material in materials %}
+                <li class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                    <div>
+                        <div class="fw-medium">{{ material.title }}</div>
+                        <div class="small text-muted">{{ material.get_material_type_display }}{% if material.description %} &bull; {{ material.description }}{% endif %}</div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a class="btn btn-sm btn-outline-secondary"
+                            href="{% url 'learning:material_download' course.slug material.pk %}">
+                            {% if material.external_url %}Open Link <i class="bi bi-box-arrow-up-right"></i>{% else %}Download <i class="bi bi-download"></i>{% endif %}
+                        </a>
+                        {% if is_manager %}
+                        <a class="btn btn-sm btn-outline-danger"
+                            data-confirm="{% translate 'Delete this material?' %}"
+                            href="{% url 'learning:material_delete' course.slug material.pk %}">
+                            <i class="bi bi-trash"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Sidebar: Course Progress & Lesson Playlist -->
+    <div class="col-lg-4">
+        <!-- Student Progress Card -->
+        {% if user.role == 'student' %}
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                    <span class="fw-semibold text-secondary small">{% translate "Course Progress" %}</span>
+                    <span class="fw-bold text-primary" id="course-progress-percent">
+                        {{ course_progress.progress_percent|default:0|floatformat:0 }}%
+                    </span>
+                </div>
+                <div class="progress" style="height: 8px;">
+                    <div class="progress-bar bg-success" id="course-progress-bar" role="progressbar"
+                        style="width: {{ course_progress.progress_percent|default:0 }}%"
+                        aria-valuenow="{{ course_progress.progress_percent|default:0 }}" aria-valuemin="0"
+                        aria-valuemax="100"></div>
+                </div>
+                <div class="small text-muted mt-2 d-flex justify-content-between" id="course-completed-count">
+                    <span>{{ completed_count }} of {{ total_lessons }} lessons completed</span>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Course Playlist Card -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white fw-bold d-flex justify-content-between align-items-center py-3">
+                <span><i class="bi bi-collection-play me-2"></i>{% translate "Course Lessons" %}</span>
+                <span class="badge text-bg-light border">{{ total_lessons }}</span>
+            </div>
+
+            <div class="lesson-playlist list-group list-group-flush">
+                {% for group in chapter_groups %}
+                {% if group.chapter != "General Lessons" or chapter_groups|length > 1 %}
+                <div class="chapter-badge-header">
+                    <i class="bi bi-folder2 me-1"></i> {{ group.chapter }}
+                </div>
+                {% endif %}
+
+                {% for item in group.lessons %}
+                <a href="{% url 'learning:lesson' course.slug item.pk %}"
+                    class="list-group-item list-group-item-action lesson-playlist-item d-flex justify-content-between align-items-center py-2 px-3 {% if item.pk == lesson.pk %}active{% endif %}">
+                    <div class="d-flex align-items-center gap-2 me-2 text-truncate">
+                        <span class="lesson-status-icon">
+                            {% if item.id in completed_lesson_ids %}
+                            <i class="bi bi-check-circle-fill text-success" title="Completed"></i>
+                            {% elif item.pk == lesson.pk %}
+                            <i class="bi bi-play-circle-fill text-primary" title="Now Playing"></i>
+                            {% else %}
+                            <i class="bi bi-circle text-muted" title="Not Started"></i>
+                            {% endif %}
+                        </span>
+                        <div class="text-truncate">
+                            <div class="text-truncate small">{{ item.order }}. {{ item.title }}</div>
+                            <div class="text-muted" style="font-size: 0.75rem;">
+                                {% if item.has_youtube %}<i class="bi bi-youtube text-danger me-1"></i>{% endif %}
+                                {{ item.duration_display }}
+                                {% if not item.is_published %}<span class="badge text-bg-warning ms-1"
+                                    style="font-size: 0.65rem;">{% translate "Draft" %}</span>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if item.pk == lesson.pk %}
+                    <span class="badge text-bg-primary rounded-pill small">{% translate "Playing" %}</span>
+                    {% endif %}
+                </a>
+                {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Course Summary Card -->
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-3">
+                <div class="fw-bold fs-6 mb-1">{{ course.title }}</div>
+                <div class="small text-muted mb-2">{{ course.code }} &bull; Instructor: {{ course.teacher.full_name }}
+                </div>
+                <div class="d-grid gap-2">
+                    <a class="btn btn-sm btn-outline-primary" href="{{ course.get_absolute_url }}">
+                        <i class="bi bi-arrow-left me-1"></i> {% translate "Back to Course Overview" %}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

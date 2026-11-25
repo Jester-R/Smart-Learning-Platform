@@ -1,0 +1,284 @@
+:root,
+html[data-theme="light"] {
+    color-scheme: light;
+    --primary: #7C3AED;
+    --secondary: #A78BFA;
+    --accent: #5B21B6;
+    --body-fg: #64748B;
+    --body-bg: #F5F3FF;
+    --body-quiet-color: #64748B;
+    --body-loud-color: #1E1B4B;
+    --header-color: #1E1B4B;
+    --header-branding-color: #1E1B4B;
+    --header-bg: #FFFFFF;
+    --header-link-color: #7C3AED;
+    --breadcrumbs-fg: #64748B;
+    --breadcrumbs-link-fg: #7C3AED;
+    --breadcrumbs-bg: #EDE9FE;
+    --link-fg: #7C3AED;
+    --link-hover-color: #5B21B6;
+    --link-selected-fg: #5B21B6;
+    --hairline-color: #DDD6FE;
+    --border-color: #DDD6FE;
+    --darkened-bg: #FFFFFF;
+    --selected-bg: #EDE9FE;
+    --selected-row: #F5F3FF;
+    --close-button-bg: #7C3AED;
+    --close-button-hover-bg: #5B21B6;
+    --button-fg: #FFFFFF;
+    --button-bg: #7C3AED;
+    --button-hover-bg: #5B21B6;
+    --default-button-bg: #7C3AED;
+    --default-button-hover-bg: #5B21B6;
+    --delete-button-bg: #DC2626;
+    --delete-button-hover-bg: #B91C1C;
+    --object-tools-fg: #FFFFFF;
+    --object-tools-bg: #7C3AED;
+    --object-tools-hover-bg: #5B21B6;
+    --font-family-primary: Inter, "Noto Sans Khmer", "Segoe UI", system-ui, sans-serif;
+    --font-family-monospace: ui-monospace, Consolas, monospace;
+}
+
+html[data-theme="dark"] {
+    color-scheme: dark;
+    --primary: #A78BFA;
+    --secondary: #C4B5FD;
+    --accent: #7C3AED;
+    --body-fg: #C4B5FD;
+    --body-bg: #17132B;
+    --body-quiet-color: #C4B5FD;
+    --body-loud-color: #F5F3FF;
+    --header-color: #F5F3FF;
+    --header-branding-color: #F5F3FF;
+    --header-bg: #211B38;
+    --header-link-color: #C4B5FD;
+    --breadcrumbs-fg: #C4B5FD;
+    --breadcrumbs-link-fg: #A78BFA;
+    --breadcrumbs-bg: #2D2448;
+    --link-fg: #A78BFA;
+    --link-hover-color: #C4B5FD;
+    --link-selected-fg: #C4B5FD;
+    --hairline-color: #40345F;
+    --border-color: #40345F;
+    --darkened-bg: #211B38;
+    --selected-bg: #2D2448;
+    --selected-row: #2D2448;
+    --close-button-bg: #7C3AED;
+    --close-button-hover-bg: #A78BFA;
+    --button-fg: #FFFFFF;
+    --button-bg: #7C3AED;
+    --button-hover-bg: #A78BFA;
+    --default-button-bg: #7C3AED;
+    --default-button-hover-bg: #A78BFA;
+    --delete-button-bg: #F87171;
+    --delete-button-hover-bg: #DC2626;
+    --object-tools-fg: #FFFFFF;
+    --object-tools-bg: #7C3AED;
+    --object-tools-hover-bg: #A78BFA;
+}
+
+html,
+body {
+    background: var(--body-bg);
+    color: var(--body-fg);
+}
+
+#header {
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--header-bg);
+    box-shadow: 0 8px 24px rgba(91, 33, 182, 0.08);
+}
+
+#site-name a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+}
+
+.admin-brand-mark {
+    display: inline-flex;
+    width: 30px;
+    height: 30px;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    border-radius: 9px;
+    overflow: hidden;
+}
+
+.admin-brand-mark img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 9px;
+}
+
+.admin-welcome {
+    color: var(--body-quiet-color);
+}
+
+.admin-theme-toggle {
+    padding: 6px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 999px;
+    background: var(--selected-bg);
+    color: var(--primary);
+    font: 600 12px var(--font-family-primary);
+    cursor: pointer;
+    transition: background-color 140ms ease, color 140ms ease;
+}
+
+.admin-theme-toggle:hover {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+#user-tools a,
+#user-tools button {
+    border-radius: 8px;
+    color: var(--header-link-color);
+}
+
+#user-tools a:hover,
+#user-tools button:hover {
+    color: var(--link-hover-color);
+}
+
+.breadcrumbs {
+    padding: 11px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--breadcrumbs-bg);
+}
+
+#content {
+    padding: 28px 30px;
+}
+
+#content h1,
+#content h2,
+#content h3 {
+    color: var(--body-loud-color);
+    letter-spacing: -0.02em;
+}
+
+.module,
+#changelist,
+#changelist-filter,
+.inline-group,
+.submit-row {
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background: var(--darkened-bg);
+    box-shadow: 0 10px 28px rgba(91, 33, 182, 0.08);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+    padding: 12px 16px;
+    color: var(--body-loud-color);
+    background: var(--selected-bg);
+    border-bottom: 1px solid var(--border-color);
+}
+
+table thead th,
+.results thead th {
+    color: var(--body-loud-color);
+    background: var(--selected-bg);
+}
+
+table tbody tr:hover,
+.row1,
+.row2 {
+    background: var(--selected-row);
+}
+
+td,
+th,
+fieldset,
+.form-row {
+    border-color: var(--border-color);
+}
+
+input,
+textarea,
+select,
+.vTextField,
+.vLargeTextField,
+.vURLField,
+.vIntegerField,
+.selector-chosen h2 {
+    color: var(--body-fg);
+    background-color: var(--darkened-bg);
+    border-color: var(--border-color);
+    border-radius: 10px;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: var(--primary);
+    outline: 2px solid rgba(124, 58, 237, 0.18);
+}
+
+.button,
+input[type="submit"],
+input[type="button"],
+.submit-row input,
+a.button {
+    border: 0;
+    border-radius: 10px;
+    color: var(--button-fg);
+    background: var(--button-bg);
+    transition: background-color 140ms ease, transform 140ms ease;
+}
+
+.button:hover,
+input[type="submit"]:hover,
+input[type="button"]:hover,
+.submit-row input:hover,
+a.button:hover {
+    color: #ffffff;
+    background: var(--button-hover-bg);
+    transform: translateY(-1px);
+}
+
+.deletelink,
+a.deletelink,
+.deletelink-box a {
+    color: var(--delete-button-bg) !important;
+}
+
+.help,
+p.help,
+form p.help,
+.help-tooltip {
+    color: var(--body-quiet-color);
+}
+
+.messagelist li {
+    border-radius: 10px;
+}
+
+#nav-sidebar {
+    background: var(--darkened-bg);
+    border-right: 1px solid var(--border-color);
+}
+
+#nav-sidebar .current-model {
+    background: var(--selected-bg);
+}
+
+@media (max-width: 767px) {
+    #header {
+        padding: 12px 15px;
+    }
+
+    #content {
+        padding: 18px 14px;
+    }
+}

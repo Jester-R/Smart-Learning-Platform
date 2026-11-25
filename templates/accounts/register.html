@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Register | Smart Learning{% endblock %}
+{% block public_content %}
+<div class="row justify-content-center py-3 py-md-5">
+    <div class="col-md-9 col-lg-7">
+        <div class="auth-card">
+            <div class="auth-card__banner">
+                <i class="bi bi-person-plus-fill"></i>
+                <h1>{% translate "Create your portal account" %}</h1>
+                <p>{% translate "Choose student, employer, or instructor registration. University and super administrator accounts are created by an administrator." %}</p>
+            </div>
+            <div class="auth-card__body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label" for="{{ form.account_type.id_for_label }}">{% translate "Account type" %}</label>
+                            {{ form.account_type }}
+                            {% for error in form.account_type.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.first_name.id_for_label }}">{% translate "First name" %}</label>
+                            {{ form.first_name }}
+                            {% for error in form.first_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.last_name.id_for_label }}">{% translate "Last name" %}</label>
+                            {{ form.last_name }}
+                            {% for error in form.last_name.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label" for="{{ form.email.id_for_label }}">{% translate "Email address" %}</label>
+                            {{ form.email }}
+                            {% for error in form.email.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.password1.id_for_label }}">{% translate "Password" %}</label>
+                            {{ form.password1 }}
+                            {% for error in form.password1.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label" for="{{ form.password2.id_for_label }}">{% translate "Confirm password" %}</label>
+                            {{ form.password2 }}
+                            {% for error in form.password2.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+                    {% if form.password1.help_text %}<div class="form-text mt-2">{{ form.password1.help_text|safe }}</div>{% endif %}
+                    <button class="btn btn-primary w-100 py-2 mt-4" type="submit">{% translate "Create account" %}</button>
+                </form>
+                <p class="small text-secondary mt-3 mb-0">{% translate "Already registered?" %} <a href="{% url 'accounts:login' %}">{% translate "Sign in" %}</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

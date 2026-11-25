@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block page_title %}Examination schedule{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">{% translate "Examination schedule" %}</h1>
+        <p class="text-secondary mb-0">{{ total_exams }} exams across {{ days|length }} exam days</p>
+    </div>
+    {% if can_manage %}<a class="btn btn-primary" href="{% url 'academic:exam_schedule_create' %}"><i class="bi bi-plus-lg"></i> Add exam slot</a>{% endif %}
+</div>
+<div class="mb-3 d-flex flex-wrap gap-2">
+    <a class="btn btn-sm {% if period == 'all' %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="?period=all">All exams ({{ total_exams }})</a>
+    <a class="btn btn-sm {% if period == 'upcoming' %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="?period=upcoming">Upcoming ({{ upcoming_count }})</a>
+    <a class="btn btn-sm {% if period == 'past' %}btn-primary{% else %}btn-outline-secondary{% endif %}" href="?period=past">Past</a>
+</div>
+{% for day in days %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-calendar3-event me-2"></i>{{ day.label }}</strong>
+        <span class="badge text-bg-primary">{{ day.count }} {% translate "exams" %}</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table align-middle mb-0">
+            <thead><tr><th>Time</th><th>Course</th><th>Exam</th><th>Venue</th><th>Status</th></tr></thead>
+            <tbody>
+                {% for item in day.items %}
+                <tr>
+                    <td class="small">{{ item.start_at|time:"H:i" }} &ndash; {{ item.end_at|time:"H:i" }}</td>
+                    <td><strong>{{ item.course.code }}</strong><div class="small text-secondary">{{ item.course.title }}</div></td>
+                    <td>{{ item.title }}{% if item.remarks %}<div class="small text-secondary">{{ item.remarks }}</div>{% endif %}</td>
+                    <td>{{ item.venue|default:"—" }}</td>
+                    <td>
+                        {% if item.start_at > now %}<span class="badge text-bg-primary">Upcoming</span>
+                        {% elif item.end_at < now %}<span class="badge text-bg-secondary">Completed</span>
+                        {% else %}<span class="badge text-bg-success">In progress</span>{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% empty %}
+<div class="card"><div class="card-body text-center text-secondary py-4">No exam schedules available for this view.</div></div>
+{% endfor %}
+{% endblock %}

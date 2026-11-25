@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block page_title %}{% translate "Subscription plans" %}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">{% translate "Subscription plans" %}</h1>
+    <a class="btn btn-outline-secondary" href="{% url 'courses:payment_history' %}">{% translate "Payment history" %}</a>
+</div>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for plan in plans %}
+    <div class="col">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+                <h2 class="h5">{{ plan.name }}</h2>
+                <div class="text-muted small mb-3">{{ plan.duration_days }} {% translate "days" %}</div>
+                <div class="h3 mb-3">₱{{ plan.price|floatformat:2 }}</div>
+                <div class="text-secondary mb-3">{{ plan.description|linebreaks }}</div>
+                {% if plan.features %}
+                <ul class="list-unstyled mb-4">
+                    {% for feature in plan.features.splitlines %}<li><i class="bi bi-check-circle text-success me-1"></i>{{ feature }}</li>{% endfor %}
+                </ul>
+                {% endif %}
+                <div class="mt-auto">
+                    {% if user.role == 'student' %}
+                    <a class="btn btn-primary w-100" href="{% url 'courses:subscription_checkout' plan.slug %}">{% translate "Subscribe" %}</a>
+                    {% else %}
+                    <span class="text-muted small">{% translate "Sign in as a student to subscribe." %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12"><div class="card"><div class="card-body text-center text-muted py-5">{% translate "No subscription plans available." %}</div></div></div>
+    {% endfor %}
+</div>
+{% endblock %}

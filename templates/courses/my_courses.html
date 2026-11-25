@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load app_extras %}
+{% block page_title %}My enrollments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">{% translate "My enrollments" %}</h1>
+    <a class="btn btn-sm btn-primary" href="{% url 'courses:list' %}">{% translate "Find courses" %}</a>
+</div>
+<div class="row row-cols-1 row-cols-lg-2 g-4">
+    {% for enrollment in enrollments %}
+    {% with cp=progress|get_item:enrollment.course_id %}
+    <div class="col"><div class="card course-card h-100 shadow-sm"><div class="card-body">
+        <div class="d-flex justify-content-between gap-2 mb-2">
+            <span class="badge text-bg-primary">{{ enrollment.course.code }}</span>
+            <span class="badge text-bg-light">{{ enrollment.get_status_display }}</span>
+        </div>
+        <h2 class="h5"><a class="text-decoration-none" href="{{ enrollment.course.get_absolute_url }}">{{ enrollment.course.title }}</a></h2>
+        <p class="small text-muted mb-2">{{ enrollment.course.teacher.full_name }} · enrolled {{ enrollment.enrolled_at|date:"M d, Y" }}</p>
+        <div class="progress mb-2" style="height: 8px"><div class="progress-bar" style="width: {{ cp.progress_percent|default:0 }}%"></div></div>
+        <div class="d-flex justify-content-between small text-muted"><span>{{ cp.progress_percent|default:0|floatformat:1 }}% complete</span><span>{% if enrollment.final_grade %}Final grade: {{ enrollment.final_grade }}%{% endif %}</span></div>
+    </div><div class="card-footer bg-white"><a class="btn btn-sm btn-primary" href="{% if cp.last_lesson and cp.last_lesson.is_published %}{% url 'learning:lesson' enrollment.course.slug cp.last_lesson.pk %}{% else %}{{ enrollment.course.get_absolute_url }}{% endif %}"><i class="bi bi-play-fill me-1"></i>{% translate "Continue learning" %}</a></div></div></div>
+    {% endwith %}
+    {% empty %}
+    <div class="col-12"><div class="card"><div class="empty-state">
+        <span class="empty-state__icon"><i class="bi bi-mortarboard"></i></span>
+        <span class="empty-state__title">{% translate "No enrollments yet" %}</span>
+        <p>{% translate "Browse the catalog and join a course to start learning." %}</p>
+        <a class="btn btn-sm btn-primary mt-2" href="{% url 'courses:list' %}">{% translate "Browse the catalog" %}</a>
+    </div></div></div>
+    {% endfor %}
+</div>
+{% endblock %}

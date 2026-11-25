@@ -1,0 +1,6 @@
+﻿<div class="card"><div class="card-body">
+<div class="d-flex flex-wrap justify-content-between gap-2"><h1 class="h5 mb-1">{{ scholarship.title }}</h1>{% if not applied %}<a class="btn btn-primary" href="{% url 'scholarships:apply' pk=scholarship.pk %}">Apply</a>{% else %}<span class="badge text-bg-success">Applied</span>{% endif %}</div>
+<p class="text-secondary small">Deadline: {{ scholarship.deadline|default:"Not specified" }}</p><p>{{ scholarship.description }}</p>
+{% if scholarship.eligibility %}<h2 class="h6">Eligibility</h2><p>{{ scholarship.eligibility }}</p>{% endif %}
+{% if scholarship.application_link %}<a class="btn btn-outline-secondary" href="{{ scholarship.application_link }}">Official link</a>{% endif %}
+</div></div>

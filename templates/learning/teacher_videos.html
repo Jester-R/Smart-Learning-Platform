@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+{% block page_title %}Manage Video Lessons{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <div>
+        <h1 class="h4 mb-1 fw-bold">{% translate "YouTube Video Lessons" %}</h1>
+        <p class="text-muted mb-0">{% translate "Add, organize, preview, and manage video teaching content across your courses." %}</p>
+    </div>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary btn-sm" href="{% url 'learning:teacher_video_create' %}">
+            <i class="bi bi-plus-lg me-1"></i> {% translate "Add Video Lesson" %}
+        </a>
+    </div>
+</div>
+
+<!-- Stats Counter Cards -->
+<div class="row row-cols-2 row-cols-lg-4 g-3 mb-4">
+    <div class="col">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">{% translate "Total Video Lessons" %}</div>
+                <div class="display-6 fw-bold text-primary">{{ total_count }}</div>
+                <div class="small text-muted">{{ youtube_count }} with YouTube videos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">{% translate "Published Lessons" %}</div>
+                <div class="display-6 fw-bold text-success">{{ published_count }}</div>
+                <div class="small text-muted">{% translate "Visible to enrolled students" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">{% translate "Draft Lessons" %}</div>
+                <div class="display-6 fw-bold text-warning">{{ draft_count }}</div>
+                <div class="small text-muted">{% translate "Hidden from students" %}</div>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card stat-card h-100 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="text-muted small">{% translate "Total Watch Time" %}</div>
+                <div class="display-6 fw-bold text-secondary">{{ total_minutes }}<span class="fs-6 fw-normal"> {% translate "min" %}</span></div>
+                <div class="small text-muted">{% translate "Across all courses" %}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Filter & Search Toolbar -->
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-body p-3">
+        <form method="get" class="row g-2 align-items-center">
+            <div class="col-md-4">
+                <select name="course" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">{% translate "All Courses" %}</option>
+                    {% for c in courses %}
+                    <option value="{{ c.pk }}" {% if selected_course == c.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ c.code }} — {{ c.title }}
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select name="status" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="">{% translate "All Statuses" %}</option>
+                    <option value="published" {% if selected_status == 'published' %}selected{% endif %}>{% translate "Published Only" %}</option>
+                    <option value="draft" {% if selected_status == 'draft' %}selected{% endif %}>{% translate "Drafts Only" %}</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group input-group-sm">
+                    <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search by title, chapter...">
+                    <button class="btn btn-outline-secondary" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </div>
+            <div class="col-md-1 text-end">
+                <a href="{% url 'learning:teacher_videos' %}" class="btn btn-sm btn-outline-secondary w-100" title="Reset Filters">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Video Lessons Management Table -->
+<div class="card shadow-sm border-0">
+    <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">{% translate "Video Lessons List" %}</span>
+        <span class="badge text-bg-light border">{{ lessons|length }} results</span>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th style="width: 110px;">{% translate "Preview" %}</th>
+                    <th>{% translate "Lesson &amp; Chapter" %}</th>
+                    <th>{% translate "Course" %}</th>
+                    <th style="width: 90px;">{% translate "Duration" %}</th>
+                    <th style="width: 70px;">{% translate "Order" %}</th>
+                    <th style="width: 100px;">{% translate "Status" %}</th>
+                    <th style="width: 120px;">{% translate "Publish" %}</th>
+                    <th style="width: 160px;" class="text-end">{% translate "Actions" %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lesson in lessons %}
+                <tr>
+                    <!-- Thumbnail with Preview Modal Trigger -->
+                    <td>
+                        {% if lesson.has_youtube %}
+                        <div class="play-badge-overlay" style="cursor: pointer;"
+                             data-bs-toggle="modal"
+                             data-bs-target="#videoPreviewModal"
+                             data-video-id="{{ lesson.youtube_video_id }}"
+                             data-video-title="{{ lesson.title }}">
+                            <img src="{{ lesson.youtube_thumbnail_url }}" alt="{{ lesson.title }}" class="video-table-thumb">
+                            <i class="bi bi-play-circle-fill play-icon"></i>
+                        </div>
+                        {% else %}
+                        <div class="video-table-thumb d-flex align-items-center justify-content-center text-muted">
+                            <i class="bi bi-film fs-4"></i>
+                        </div>
+                        {% endif %}
+                    </td>
+
+                    <!-- Title & Chapter -->
+                    <td>
+                        <a class="fw-semibold text-decoration-none" href="{% url 'learning:lesson' lesson.course.slug lesson.pk %}">
+                            {{ lesson.title }}
+                        </a>
+                        {% if lesson.chapter %}
+                        <div class="small text-muted"><i class="bi bi-bookmark me-1"></i>{{ lesson.chapter }}</div>
+                        {% endif %}
+                        {% if lesson.description %}
+                        <div class="small text-secondary text-truncate" style="max-width: 320px;">
+                            {{ lesson.description }}
+                        </div>
+                        {% endif %}
+                    </td>
+
+                    <!-- Course -->
+                    <td>
+                        <a href="{{ lesson.course.get_absolute_url }}" class="badge text-bg-light border text-decoration-none">
+                            {{ lesson.course.code }}
+                        </a>
+                        <div class="small text-muted text-truncate" style="max-width: 180px;">{{ lesson.course.title }}</div>
+                    </td>
+
+                    <!-- Duration -->
+                    <td>
+                        <span class="small">{{ lesson.duration_display }}</span>
+                    </td>
+
+                    <!-- Order -->
+                    <td>
+                        <span class="badge rounded-pill text-bg-light border">#{{ lesson.order }}</span>
+                    </td>
+
+                    <!-- Status Badge -->
+                    <td>
+                        {% if lesson.is_published %}
+                        <span class="badge text-bg-success status-badge">{% translate "Published" %}</span>
+                        {% else %}
+                        <span class="badge text-bg-warning status-badge">{% translate "Draft" %}</span>
+                        {% endif %}
+                    </td>
+
+                    <!-- Quick Publish Toggle -->
+                    <td>
+                        <button type="button"
+                                class="btn btn-sm btn-outline-secondary toggle-publish-btn py-1 px-2"
+                                data-toggle-url="{% url 'learning:lesson_toggle_publish' lesson.course.slug lesson.pk %}">
+                            {% if lesson.is_published %}
+                            <i class="bi bi-eye-slash"></i> Unpublish
+                            {% else %}
+                            <i class="bi bi-eye"></i> Publish
+                            {% endif %}
+                        </button>
+                    </td>
+
+                    <!-- Actions -->
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm">
+                            {% if lesson.has_youtube %}
+                            <button type="button" class="btn btn-outline-secondary"
+                                    title="Quick Preview"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#videoPreviewModal"
+                                    data-video-id="{{ lesson.youtube_video_id }}"
+                                    data-video-title="{{ lesson.title }}">
+                                <i class="bi bi-play-fill text-danger"></i>
+                            </button>
+                            {% endif %}
+                            <a class="btn btn-outline-secondary" href="{% url 'learning:lesson' lesson.course.slug lesson.pk %}" title="Open Lesson">
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                            <a class="btn btn-outline-primary" href="{% url 'learning:lesson_edit' lesson.course.slug lesson.pk %}" title="Edit Lesson">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a class="btn btn-outline-danger" href="{% url 'learning:lesson_delete' lesson.course.slug lesson.pk %}" title="Delete Lesson">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="8" class="text-center py-5 text-muted">
+                        <i class="bi bi-camera-video display-5 d-block mb-2 text-secondary"></i>
+                        {% translate "No video lessons found matching the criteria." %}
+                        <div class="mt-2">
+                            <a class="btn btn-sm btn-primary" href="{% url 'learning:teacher_video_create' %}">
+                                <i class="bi bi-plus-lg me-1"></i> {% translate "Add your first video lesson" %}
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Video Preview Modal -->
+<div class="modal fade" id="videoPreviewModal" tabindex="-1" aria-labelledby="videoPreviewModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="videoPreviewModalTitle">{% translate "YouTube Video Preview" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 bg-dark">
+                <div class="ratio ratio-16x9">
+                    <iframe id="videoPreviewModalIframe"
+                            src=""
+                            title="YouTube Preview"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <a id="videoPreviewModalWatchLink" href="#" target="_blank" rel="noopener" class="small text-decoration-none">
+                    <i class="bi bi-youtube text-danger me-1"></i> {% translate "Open on YouTube &nearr;" %}
+                </a>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{% translate "Close" %}</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

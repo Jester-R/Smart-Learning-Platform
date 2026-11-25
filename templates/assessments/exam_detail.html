@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block page_title %}{{ exam.title }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div><span class="badge text-bg-warning">{% translate "Midterm examination" %}</span><h1 class="h4 mt-2 mb-0">{{ exam.title }}</h1><p class="text-muted mb-0">{{ course.code }} — {{ course.title }}</p></div>
+    <div class="d-flex gap-2 flex-wrap">
+        <a class="btn btn-sm btn-outline-secondary" href="{{ course.get_absolute_url }}">{% translate "Back to course" %}</a>
+        {% if is_manager %}<a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:exam_questions' exam.pk %}">{% translate "Questions" %}</a><a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:exam_edit' course.slug exam.pk %}">{% translate "Edit" %}</a><a class="btn btn-sm btn-outline-danger" href="{% url 'assessments:exam_delete' course.slug exam.pk %}">{% translate "Delete" %}</a>{% endif %}
+    </div>
+</div>
+<div class="row g-4">
+    <div class="col-lg-8"><div class="card"><div class="card-body">
+        {% if exam.description %}<div class="text-secondary">{{ exam.description|linebreaks }}</div>{% endif %}
+        {% if exam.instructions %}<hr><h2 class="h6">{% translate "Instructions" %}</h2><div class="text-secondary">{{ exam.instructions|linebreaks }}</div>{% endif %}
+        {% if is_manager %}<hr><h2 class="h6">{% translate "Questions" %}</h2>{% for question in exam.questions.all %}<div class="border rounded p-2 mb-2"><strong>Q{{ question.order }}.</strong> {{ question.text }} <span class="badge text-bg-light">{{ question.points }} pts</span></div>{% empty %}<p class="text-muted">{% translate "No questions yet." %}</p>{% endfor %}{% endif %}
+    </div></div></div>
+    <div class="col-lg-4">
+        <div class="card mb-3"><div class="card-header bg-white fw-semibold">{% translate "Details" %}</div><ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between"><span>{% translate "Questions" %}</span><strong>{{ question_count }}</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>{% translate "Total points" %}</span><strong>{{ total_points }}</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>{% translate "Time limit" %}</span><strong>{{ exam.time_limit_minutes }} min</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>{% translate "Attempts" %}</span><strong>{{ exam.max_attempts }}</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>{% translate "Passing score" %}</span><strong>{{ exam.passing_score }}%</strong></li>
+            <li class="list-group-item d-flex justify-content-between"><span>{% translate "Availability" %}</span>{% if exam.is_available %}<span class="badge text-bg-success">{% translate "Open" %}</span>{% else %}<span class="badge text-bg-secondary">{% translate "Closed" %}</span>{% endif %}</li>
+        </ul></div>
+        {% if is_manager %}
+        <div class="card"><div class="card-header bg-white fw-semibold">{% translate "Attempts" %}</div><div class="list-group list-group-flush">
+            {% for attempt in exam.attempts.all %}<div class="list-group-item d-flex justify-content-between align-items-center"><div><div class="fw-semibold">{{ attempt.student.full_name }}</div><div class="small text-muted">Attempt {{ attempt.attempt_number }} · {{ attempt.score }}/{{ attempt.max_score }}</div></div><a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:exam_result' attempt.pk %}">{% translate "View" %}</a></div>{% empty %}<div class="list-group-item text-muted small">{% translate "No attempts yet." %}</div>{% endfor %}
+        </div></div>
+        {% else %}
+        <div class="card"><div class="card-body">
+            <p class="small text-muted">{% translate "Remaining attempts:" %} <strong>{{ remaining_attempts }}</strong></p>
+            <form method="post" action="{% url 'assessments:exam_start' exam.pk %}">{% csrf_token %}<button class="btn btn-primary w-100" type="submit" {% if not exam.is_available or remaining_attempts == 0 %}disabled{% endif %}>{% translate "Start examination" %}</button></form>
+        </div></div>
+        {% endif %}
+        {% if attempts %}
+        <div class="card mt-3"><div class="card-header bg-white fw-semibold">{% translate "Your attempts" %}</div><div class="list-group list-group-flush">
+            {% for attempt in attempts %}<a class="list-group-item list-group-item-action d-flex justify-content-between" href="{% url 'assessments:exam_result' attempt.pk %}"><span>Attempt {{ attempt.attempt_number }}</span><span class="badge text-bg-light">{{ attempt.get_status_display }} · {{ attempt.score }}/{{ attempt.max_score }}</span></a>{% endfor %}
+        </div></div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

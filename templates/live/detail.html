@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}{{ session.title }} | Live Portal{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a class="text-decoration-none" href="{% url 'live:portal' %}">{% translate "Live Portal" %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ session.title }}</li>
+    </ol>
+</nav>
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <div>
+        <h1 class="h4 mb-1">{{ session.title }}</h1>
+        <div class="small text-secondary">{{ session.course.code }} &middot; {{ session.course.title }} &middot; {{ session.get_status_display }}</div>
+    </div>
+    {% if can_manage %}<a class="btn btn-sm btn-outline-primary" href="{% url 'live:create' %}"><i data-lucide="plus"></i> {% translate "New session" %}</a>{% endif %}
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            {% if session.embed_url %}
+            <div class="ratio ratio-16x9"><iframe src="{{ session.embed_url }}" title="{{ session.title }}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            {% else %}
+            <div class="d-flex flex-column align-items-center justify-content-center py-5 text-center">
+                <i data-lucide="video-off" class="mb-3" style="width: 48px; height: 48px; color: #A78BFA;"></i>
+                <div class="fw-semibold">{% translate "No stream link has been added yet." %}</div>
+                <div class="small text-secondary">{% translate "The teacher can add a YouTube live link when the session is ready." %}</div>
+            </div>
+            {% endif %}
+        </div>
+        {% if session.youtube_watch_url %}<a class="btn btn-sm btn-outline-primary mt-3" href="{{ session.youtube_watch_url }}" target="_blank" rel="noopener"><i data-lucide="external-link"></i> {% translate "Open on YouTube" %}</a>{% endif %}
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-header bg-white fw-semibold">{% translate "Session details" %}</div>
+            <div class="list-group list-group-flush">
+                <div class="list-group-item"><div class="small text-secondary">{% translate "Starts" %}</div><div class="fw-semibold">{{ session.starts_at|date:"M d, Y H:i" }}</div></div>
+                <div class="list-group-item"><div class="small text-secondary">{% translate "Ends" %}</div><div class="fw-semibold">{{ session.ends_at|date:"M d, Y H:i" }}</div></div>
+                <div class="list-group-item"><div class="small text-secondary">{% translate "Teacher" %}</div><div class="fw-semibold">{{ session.teacher.full_name }}</div></div>
+                <div class="list-group-item"><div class="small text-secondary">{% translate "Enrolled students" %}</div><div class="fw-semibold">{{ attendee_count }}</div></div>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white fw-semibold">{% translate "Description" %}</div>
+            <div class="card-body">{% if session.description %}{{ session.description|linebreaksbr }}{% else %}{% translate "No description provided." %}{% endif %}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

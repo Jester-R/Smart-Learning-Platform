@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block page_title %}{% translate "Checkout" %}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-white fw-semibold">{% translate "Course payment" %}</div>
+            <div class="card-body p-4">
+                <h1 class="h4">{{ course.code }} - {{ course.title }}</h1>
+                <p class="text-muted">{% translate "Instructor" %}: {{ course.teacher.full_name }}</p>
+                <div class="alert alert-light border d-flex justify-content-between align-items-center">
+                    <span>{% translate "Amount due" %}</span>
+                    <span class="h4 mb-0">₱{{ amount|floatformat:2 }}</span>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{% translate "Payment method" %}</label>
+                        {% for method in methods %}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="method" id="method-{{ method.pk }}" value="{{ method.pk }}" required>
+                            <label class="form-check-label" for="method-{{ method.pk }}">
+                                <strong>{{ method.name }}</strong>
+                                {% if method.instructions %}<div class="small text-muted">{{ method.instructions|linebreaksbr }}</div>{% endif %}
+                            </label>
+                        </div>
+                        {% empty %}
+                        <div class="alert alert-warning">{% translate "No payment methods are available yet." %}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="reference">{% translate "Reference or transaction number" %}</label>
+                        <input class="form-control" type="text" id="reference" name="reference" maxlength="100">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="notes">{% translate "Notes" %}</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" type="submit" {% if not methods %}disabled{% endif %}>{% translate "Submit payment" %}</button>
+                        <a class="btn btn-outline-secondary" href="{{ course.get_absolute_url }}">{% translate "Cancel" %}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

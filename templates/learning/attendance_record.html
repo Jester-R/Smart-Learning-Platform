@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block page_title %}Record attendance{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="h5 mb-1">{% translate "Record attendance" %}</h1>
+                <p class="text-secondary small mb-4">Official attendance changes are attributed to your account and logged.</p>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        {{ field }}
+                        {% for error in field.errors %}<div class="invalid-feedback d-block">{{ error }}</div>{% endfor %}
+                    </div>
+                    {% endfor %}
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" type="submit">{% translate "Save attendance" %}</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'learning:attendance' %}">{% translate "View attendance" %}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

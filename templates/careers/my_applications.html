@@ -1,0 +1,11 @@
+﻿{% extends "base.html" %}
+{% block page_title %}My applications{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h4 mb-0">{% translate "My job applications" %}</h1>
+    <a class="btn btn-outline-primary" href="{% url 'careers:my_cvs' %}">{% translate "My CVs" %}</a>
+</div>
+<div class="card"><div class="table-responsive"><table class="table mb-0 align-middle"><thead><tr><th>Job</th><th>Company</th><th>CV</th><th>Status</th><th>Applied</th><th></th></tr></thead><tbody>
+{% for item in applications %}<tr><td>{{ item.job.title }}</td><td>{{ item.job.company.company_name }}</td><td>{% if item.cv_document %}<a href="{{ item.cv_document.file.url }}" target="_blank" rel="noopener">{{ item.cv_document.title }}</a>{% else %}—{% endif %}</td><td>{{ item.get_status_display }}</td><td>{{ item.created_at|date:"Y-m-d" }}</td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="{% url 'careers:application_conversation' pk=item.pk %}"><i class="bi bi-chat-left-text me-1"></i>Message HR</a></td></tr>{% empty %}<tr><td colspan="6" class="text-center py-4">No applications yet.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

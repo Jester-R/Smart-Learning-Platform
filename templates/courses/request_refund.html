@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block page_title %}{% translate "Request refund" %}{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-semibold">{% translate "Refund request" %}</div>
+            <div class="card-body p-4">
+                <p class="text-muted">{% translate "Payment" %} #{{ payment.pk }} · {{ payment.course.code|default:payment.plan.name|default:"-" }} · ₱{{ payment.amount|floatformat:2 }}</p>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label" for="reason">{% translate "Reason" %}</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="4" required></textarea>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-danger" type="submit">{% translate "Submit request" %}</button>
+                        <a class="btn btn-outline-secondary" href="{% url 'courses:payment_history' %}">{% translate "Cancel" %}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

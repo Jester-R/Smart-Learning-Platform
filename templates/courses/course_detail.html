@@ -1,0 +1,164 @@
+{% extends "base.html" %}
+{% block page_title %}{{ course.code }}{% endblock %}
+{% block content %}
+<div class="card course-hero shadow-sm mb-4">
+    <div class="card-body p-4">
+        <div class="d-flex flex-wrap justify-content-between gap-3">
+            <div class="flex-grow-1">
+                <div class="d-flex flex-wrap gap-2 mb-2">
+                    <span class="badge text-bg-primary">{{ course.code }}</span>
+                    <span class="badge {% if course.status == 'published' %}text-bg-success{% elif course.status == 'archived' %}text-bg-secondary{% else %}text-bg-warning{% endif %}">{{ course.get_status_display }}</span>
+                    <span class="badge text-bg-light">{{ course.get_difficulty_display }}</span>
+                </div>
+                <h1 class="h3">{{ course.title }}</h1>
+                <p class="text-muted mb-2">Instructor: {{ course.teacher.full_name }}{% if course.category %} · {{ course.category.name }}{% endif %} · {{ course.duration_hours }} hours</p>
+                <div class="text-secondary">{{ course.description|linebreaks }}</div>
+            </div>
+            <div class="d-flex flex-column gap-2 course-actions">
+                {% if is_manager %}
+                <a class="btn btn-primary" href="{% url 'courses:edit' course.slug %}">{% translate "Edit course" %}</a>
+                <a class="btn btn-outline-primary" href="{% url 'learning:lesson_create' course.slug %}">{% translate "Add lesson" %}</a>
+                <a class="btn btn-outline-secondary" href="{% url 'learning:material_create' course.slug %}">{% translate "Upload material" %}</a>
+                <a class="btn btn-outline-secondary" href="{% url 'courses:students' course.slug %}">{% translate "Students" %}</a>
+                {% elif enrolled %}
+                {% if next_lesson %}
+                <a class="btn btn-primary" href="{% url 'learning:lesson' course.slug next_lesson.pk %}">
+                    <i class="bi bi-play-circle-fill me-1"></i>{% if completed_lesson_ids %}{% translate "Continue learning" %}{% else %}{% translate "Start learning" %}{% endif %}
+                </a>
+                {% endif %}
+                <span class="badge text-bg-success fs-6">{% translate "Enrolled" %}</span>
+                {% if course_progress %}<div class="small text-muted">Progress: {{ course_progress.progress_percent|floatformat:0 }}%</div>{% endif %}
+                {% if certificate %}<a class="btn btn-success" href="{% url 'certificates:detail' certificate.pk %}">{% translate "View certificate" %}</a>
+                {% elif can_claim_certificate %}
+                <form method="post" action="{% url 'certificates:claim' course.slug %}">{% csrf_token %}<button class="btn btn-warning w-100" type="submit">{% translate "Claim certificate" %}</button></form>
+                {% endif %}
+                {% elif user.role == 'student' %}
+                <div class="h4 mb-0">₱{{ course.price|floatformat:2 }}</div>
+                <form method="post" action="{% url 'courses:enroll' course.slug %}">{% csrf_token %}<button class="btn btn-primary w-100" type="submit">{% if course.price > 0 %}{% translate "Pay and enroll" %}{% else %}{% translate "Enroll now" %}{% endif %}</button></form>
+                {% endif %}
+                {% if is_manager %}<a class="btn btn-outline-danger" data-confirm="{% translate 'Delete this course?' %}" href="{% url 'courses:delete' course.slug %}">{% translate "Delete course" %}</a>{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% if user.is_authenticated and user.role == 'student' and not enrolled %}
+<div class="md-banner" role="status">
+    <span class="md-banner__icon"><i class="bi bi-info-circle-fill"></i></span>
+    <div class="md-banner__body">
+        <span class="md-banner__title">{% translate "Course preview" %}</span>
+        <span class="md-banner__text">{% translate "Enroll to watch lessons, submit assessments, and claim your certificate." %}</span>
+    </div>
+    <button type="button" class="btn-close" data-md-banner-close aria-label="{% translate 'Dismiss' %}"></button>
+</div>
+{% endif %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <ul class="nav md-tabs mb-4" role="tablist">
+            <li class="nav-item" role="presentation"><button class="nav-link active" id="md-tab-lessons-btn" data-bs-toggle="tab" data-bs-target="#md-tab-lessons" type="button" role="tab" aria-controls="md-tab-lessons" aria-selected="true"><i class="bi bi-play-circle me-1"></i>{% translate "Lessons" %}</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" id="md-tab-assignments-btn" data-bs-toggle="tab" data-bs-target="#md-tab-assignments" type="button" role="tab" aria-controls="md-tab-assignments" aria-selected="false"><i class="bi bi-journal-check me-1"></i>{% translate "Assignments" %}</button></li>
+            <li class="nav-item" role="presentation"><button class="nav-link" id="md-tab-assessments-btn" data-bs-toggle="tab" data-bs-target="#md-tab-assessments" type="button" role="tab" aria-controls="md-tab-assessments" aria-selected="false"><i class="bi bi-patch-question me-1"></i>{% translate "Assessments" %}</button></li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="md-tab-lessons" role="tabpanel" aria-labelledby="md-tab-lessons-btn">
+        <div class="card mb-4"><div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center"><span>{% translate "Lessons" %}</span>{% if is_manager %}<a class="btn btn-sm btn-outline-primary" href="{% url 'learning:lesson_create' course.slug %}">{% translate "Add lesson" %}</a>{% elif enrolled and next_lesson %}<a class="btn btn-sm btn-primary" href="{% url 'learning:lesson' course.slug next_lesson.pk %}"><i class="bi bi-play-fill me-1"></i>{% translate "Continue learning" %}</a>{% endif %}</div>
+            <div class="list-group list-group-flush md-list">
+                {% for lesson in lessons %}
+                <div class="list-group-item d-flex justify-content-between align-items-center gap-3">
+                    <div class="d-flex align-items-start gap-2">
+                        <span class="badge rounded-pill text-bg-light border">{{ lesson.order }}</span>
+                        <div>
+                            {% if is_manager or enrolled %}
+                            <a class="fw-semibold text-decoration-none" href="{% url 'learning:lesson' course.slug lesson.pk %}">
+                                {% if lesson.has_youtube %}<i class="bi bi-youtube text-danger me-1"></i>{% endif %}
+                                {{ lesson.title }}
+                            </a>
+                            {% else %}
+                            <span class="fw-semibold text-muted">
+                                {% if lesson.has_youtube %}<i class="bi bi-youtube text-danger me-1"></i>{% endif %}
+                                {{ lesson.title }}
+                            </span>
+                            {% endif %}
+                            <div class="small text-muted">
+                                {% if lesson.chapter %}<span class="badge text-bg-light border me-1"><i class="bi bi-bookmark me-1"></i>{{ lesson.chapter }}</span>{% endif %}
+                                {{ lesson.duration_display }}
+                                {% if lesson.id in completed_lesson_ids %} · <span class="text-success"><i class="bi bi-check-circle-fill"></i> {% translate "completed" %}</span>{% endif %}
+                                {% if not lesson.is_published %} · <span class="badge text-bg-warning">{% translate "draft" %}</span>{% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-1 align-items-center">
+                        {% if is_manager or enrolled %}
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'learning:lesson' course.slug lesson.pk %}">{% translate "Open" %}</a>
+                        {% else %}
+                        <span class="badge text-bg-light"><i class="bi bi-lock me-1"></i>{% translate "Enroll to watch" %}</span>
+                        {% endif %}
+                        {% if is_manager %}
+                        <form method="post" action="{% url 'learning:lesson_toggle_publish' course.slug lesson.pk %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm {% if lesson.is_published %}btn-outline-warning{% else %}btn-outline-success{% endif %}" title="Toggle publish">
+                                {% if lesson.is_published %}<i class="bi bi-eye-slash"></i>{% else %}<i class="bi bi-eye"></i>{% endif %}
+                            </button>
+                        </form>
+                        <a class="btn btn-sm btn-outline-secondary" href="{% url 'learning:lesson_edit' course.slug lesson.pk %}">{% translate "Edit" %}</a>
+                        {% endif %}
+                    </div>
+                </div>
+                {% empty %}<div class="list-group-item text-muted">{% translate "No lessons have been added yet." %}</div>{% endfor %}
+            </div>
+        </div>
+            </div>
+            <div class="tab-pane fade" id="md-tab-assignments" role="tabpanel" aria-labelledby="md-tab-assignments-btn">
+        <div class="card mb-4"><div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center"><span>{% translate "Assignments" %}</span>{% if is_manager %}<a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:assignment_create' course.slug %}">{% translate "New assignment" %}</a>{% endif %}</div>
+            <div class="list-group list-group-flush md-list">
+                {% for assignment in assignments %}
+                <div class="list-group-item d-flex justify-content-between align-items-center gap-2">
+                    <div>{% if is_manager or enrolled %}<a class="fw-semibold text-decoration-none" href="{% url 'assessments:assignment' course.slug assignment.pk %}">{{ assignment.title }}</a>{% else %}<span class="fw-semibold text-muted">{{ assignment.title }}</span>{% endif %}<div class="small text-muted">{% if assignment.due_at %}Due {{ assignment.due_at|date:"M d, Y H:i" }}{% else %}No deadline{% endif %} · {{ assignment.max_points }} points</div></div>
+                    <span class="badge text-bg-light">{{ assignment.get_status_display|default:"Assignment" }}</span>
+                </div>
+                {% empty %}<div class="list-group-item text-muted">{% translate "No assignments yet." %}</div>{% endfor %}
+            </div>
+        </div>
+            </div>
+            <div class="tab-pane fade" id="md-tab-assessments" role="tabpanel" aria-labelledby="md-tab-assessments-btn">
+        <div class="card"><div class="card-header bg-white fw-semibold d-flex justify-content-between align-items-center"><span>{% translate "Quizzes &amp; midterm exams" %}</span>
+            {% if is_manager %}<div class="d-flex gap-1"><a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:quiz_create' course.slug %}">{% translate "New quiz" %}</a><a class="btn btn-sm btn-outline-primary" href="{% url 'assessments:exam_create' course.slug %}">{% translate "New exam" %}</a></div>{% endif %}
+        </div>
+            <div class="list-group list-group-flush md-list">
+                {% for quiz in quizzes %}
+                <div class="list-group-item d-flex justify-content-between align-items-center gap-2"><div>{% if is_manager or enrolled %}<a class="fw-semibold text-decoration-none" href="{% url 'assessments:quiz_detail' quiz.pk %}">{{ quiz.title }}</a>{% else %}<span class="fw-semibold text-muted">{{ quiz.title }}</span>{% endif %}<div class="small text-muted">{{ quiz.question_count }} questions · {{ quiz.max_attempts }} attempt(s)</div></div><span class="badge text-bg-info">{% translate "Quiz" %}</span></div>
+                {% endfor %}
+                {% for exam in exams %}
+                <div class="list-group-item d-flex justify-content-between align-items-center gap-2"><div>{% if is_manager or enrolled %}<a class="fw-semibold text-decoration-none" href="{% url 'assessments:exam_detail' exam.pk %}">{{ exam.title }}</a>{% else %}<span class="fw-semibold text-muted">{{ exam.title }}</span>{% endif %}<div class="small text-muted">{{ exam.question_count }} questions · {{ exam.max_attempts }} attempt(s)</div></div><span class="badge text-bg-warning">{% translate "Midterm" %}</span></div>
+                {% endfor %}
+                {% if not quizzes and not exams %}<div class="list-group-item text-muted">{% translate "No assessments yet." %}</div>{% endif %}
+            </div>
+        </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card mb-4"><div class="card-header bg-white fw-semibold d-flex justify-content-between"><span>{% translate "Learning materials" %}</span>{% if is_manager %}<a class="small" href="{% url 'learning:material_create' course.slug %}">{% translate "Upload" %}</a>{% endif %}</div>
+            <ul class="list-group list-group-flush md-list">
+                {% for material in materials %}
+                <li class="list-group-item">
+                    <div class="fw-semibold">{{ material.title }}</div>
+                    <div class="small text-muted">{{ material.get_material_type_display }}</div>
+                    {% if is_manager or enrolled %}<a class="btn btn-sm btn-outline-secondary mt-2" href="{% url 'learning:material_download' course.slug material.pk %}">{% if material.external_url %}Open link{% else %}Download{% endif %}</a>{% endif %}
+                    {% if is_manager %}<a class="btn btn-sm btn-outline-danger mt-2" data-confirm="{% translate 'Delete this material?' %}" href="{% url 'learning:material_delete' course.slug material.pk %}">{% translate "Delete" %}</a>{% endif %}
+                </li>
+                {% empty %}<li class="list-group-item text-muted">{% translate "No materials uploaded." %}</li>{% endfor %}
+            </ul>
+        </div>
+        {% if course.objectives %}
+        <div class="card mb-4"><div class="card-header bg-white fw-semibold">{% translate "Learning objectives" %}</div><div class="card-body">{{ course.objectives|linebreaks }}</div></div>
+        {% endif %}
+        <div class="card"><div class="card-header bg-white fw-semibold d-flex justify-content-between"><span>{% translate "Announcements" %}</span><a class="small" href="{% url 'notifications:announcements' %}">{% translate "All" %}</a></div>
+            <ul class="list-group list-group-flush md-list">
+                {% for announcement in announcements %}
+                <li class="list-group-item"><div class="fw-semibold">{{ announcement.title }}</div><div class="small text-muted">{{ announcement.content|truncatechars:120 }}</div><div class="small text-muted">{{ announcement.published_at|date:"M d, Y" }}</div></li>
+                {% empty %}<li class="list-group-item text-muted">{% translate "No announcements." %}</li>{% endfor %}
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

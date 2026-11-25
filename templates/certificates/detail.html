@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block page_title %}Certificate {{ certificate.certificate_id }}{% endblock %}
+{% block content %}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+    <h1 class="h4 mb-0">{% translate "Certificate" %}</h1>
+    <div class="d-flex gap-2"><a class="btn btn-sm btn-outline-secondary" href="{% url 'certificates:list' %}">{% translate "All certificates" %}</a><a class="btn btn-sm btn-primary" href="{% url 'certificates:download' certificate.pk %}"><i class="bi bi-download me-1"></i>{% translate "Save PDF" %}</a></div>
+</div>
+<div class="row justify-content-center"><div class="col-lg-9">
+<div class="certificate border rounded-4 p-5 bg-white shadow-sm text-center">
+    <div class="text-uppercase text-muted small mb-2">{% translate "Certificate of completion" %}</div>
+    <div class="excellence-seal mx-auto mb-4" aria-hidden="true">
+        <span class="seal-label seal-label--top">OFFICIAL SEAL</span>
+        <span class="seal-star"></span>
+        <span class="seal-year">{{ certificate.issued_at|date:"Y" }}</span>
+        <span class="seal-banner">EXCELLENCE</span>
+        <span class="seal-label seal-label--bottom">SMART LEARNING</span>
+    </div>
+    <h2 class="display-6 fw-bold mb-3">{{ certificate.student.full_name }}</h2>
+    <p class="lead mb-1">{% translate "has successfully completed" %}</p>
+    <h3 class="h4 mb-3">{{ certificate.course.title }}</h3>
+    <p class="mb-4">Issued on {{ certificate.issued_at|date:"F d, Y" }}{% if certificate.grade_at_issue %} with a final grade of {{ certificate.grade_at_issue }}%{% endif %}.</p>
+    <div class="row justify-content-center small text-muted">
+        <div class="col-md-4"><div class="text-uppercase">{% translate "Certificate ID" %}</div><code>{{ certificate.certificate_id }}</code></div>
+        <div class="col-md-4"><div class="text-uppercase">{% translate "Verification code" %}</div><code>{{ certificate.verification_code }}</code></div>
+        <div class="col-md-4"><div class="text-uppercase">{% translate "Status" %}</div><span class="badge {% if certificate.status == 'valid' %}text-bg-success{% else %}text-bg-danger{% endif %}">{{ certificate.get_status_display }}</span></div>
+    </div>
+    <p class="small text-muted mt-4">Verify this certificate at {% url 'certificates:verify_form' %}?code={{ certificate.verification_code }}</p>
+</div>
+</div></div>
+{% endblock %}
