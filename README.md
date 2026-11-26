@@ -215,3 +215,12 @@ Smart Learning Platform/
   `GEMINI_MODEL` in `.env`, then restart the server.
 - **Static files look unstyled** — check internet access to the Bootstrap CDN or
   replace the CDN links in `templates/base.html` with local Bootstrap files.
+
+## Deployment (AWS)
+
+The production instance (`smart-learning.duckdns.org`) runs behind nginx with
+Let's Encrypt SSL, gunicorn on `127.0.0.1:8001`, and MySQL/MariaDB.
+
+Pushing to `main` on GitHub is enough: the `smartlearning-autopull.timer`
+systemd timer pulls commits every 2 minutes, installs requirements, runs
+migrations and `collectstatic`, then restarts `smart-learning.service`.
